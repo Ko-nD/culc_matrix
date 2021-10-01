@@ -23,7 +23,7 @@ class Matrix:
             assert isinstance(m, int), 'Неверные данные'
             
             if n >= 0 and m >= 0: 
-                self.matrix = [[0 for j in range(m)]for i in range(n)]
+                self.matrix = [[0 for j in range(m)] for i in range(n)]
                 
 # ========================Транспонирование=====================================   
     def T(self):
@@ -257,11 +257,13 @@ class Matrix:
 #             del h_dict[i]
 
         return list(h_dict.keys())[0]  
+
+
     # ========================Удаление Элемента=========================
     def __delitem__(self, key):
         del self.matrix[key]
-# ======================Рекурсивный определитель===============================
 
+# ======================Рекурсивный определитель===============================
     def det(self):
         assert self.shape()[0] == self.shape()[1], 'Не квадратная'
         line = self.best_line()

@@ -1,4 +1,5 @@
 from classes import *
+from functions import *
 
 
 arr = Matrix([
@@ -18,5 +19,16 @@ print('Матрица - матрица\n', arr - arr)
 print('Лучшая строка для определителя', arr.best_line())
 print('Определитель Рекурсией', arr.det())
 
+arr1 = Matrix([
+    [3, -1, 2],
+    [4, 2, 0],
+    [-5, 6, 1]
+])
 
+arr2 = Matrix([
+    [8, 1],
+    [7, 2],
+    [2, -3]
+])
+print(dot(arr1, arr2))
 
