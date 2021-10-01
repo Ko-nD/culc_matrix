@@ -1,5 +1,4 @@
 from classes import *
-from functions import *
 
 
 arr = Matrix([
@@ -30,5 +29,5 @@ arr2 = Matrix([
     [7, 2],
     [2, -3]
 ])
-print(dot(arr1, arr2))
+print(Matrix.dot(arr1, arr2) + 7)
 
