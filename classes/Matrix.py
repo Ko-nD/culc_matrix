@@ -3,7 +3,7 @@ import copy
 
 class Matrix:
     
-    def __init__(self,n, m=False):
+    def __init__(self, n, m=False):
         
         __slots__ = 'matrix'
 # ==========================Создание===========================================     
@@ -277,7 +277,7 @@ class Matrix:
                     for i in range(len(matr)):
                         del matr[i][ind]
                     del matr[line]
-                    summ += ((-1)**(ind+line))*(matr.det())*elem           
+                    summ += ((-1) ** (ind + line)) * (matr.det()) * elem           
             return summ
             
                 
