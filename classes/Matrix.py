@@ -313,12 +313,12 @@ class Matrix:
 
     # считывание матричного уравнения и его решение 
     @staticmethod
-    def parse_matrix_equation(equation: str):
+    def do_equation(equation: str):
         alph = 'ABCDEFGHIJKLNOPQRSTUVWXYZ' # за исключением M
         dict_mtrx = {}
         for elem in equation: # считываем вместо букв - матрицы
             if elem in alph and elem not in dict_mtrx:
-                dict_mtrx[elem] = Matrix.get_matrix(elem)
+                dict_mtrx[elem] = Matrix.get_by_console(elem)
 
         for key in dict_mtrx.keys(): # меняем буквы на матрицы 
             equation = equation.replace(key, f'dict_mtrx["{key}"]')
@@ -331,7 +331,7 @@ class Matrix:
 
     # консольное считывание матрицы
     @staticmethod
-    def get_matrix(name: str):
+    def get_by_console(name: str):
         m = int(input(f'Введите кол-во строк матрицы {name}:\n'))
         n = int(input(f'Введите кол-во столбцов матрицы {name}:\n'))
         mtrx = Matrix(m, n)
