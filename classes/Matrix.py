@@ -315,14 +315,12 @@ class Matrix:
     @staticmethod
     def do_equation(equation: str):
         alph = 'ABCDEFGHIJKLNOPQRSTUVWXYZ' # за исключением M
-        dict_mtrx = {}
+        arr_mtrx = ''
         for elem in equation: # считываем вместо букв - матрицы
-            if elem in alph and elem not in dict_mtrx:
-                dict_mtrx[elem] = Matrix.get_by_console(elem)
-
-        for key in dict_mtrx.keys(): # меняем буквы на матрицы 
-            equation = equation.replace(key, f'dict_mtrx["{key}"]')
-
+            if elem in alph and elem not in arr_mtrx:
+                arr_mtrx += elem
+                exec(f'{elem}=Matrix.get_by_console("{elem}")')
+                
         try: 
             return eval(equation)
         except:
