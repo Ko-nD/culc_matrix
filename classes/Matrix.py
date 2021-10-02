@@ -308,3 +308,36 @@ class Matrix:
 
         return mtrx
 
+
+
+
+    # считывание матричного уравнения и его решение 
+    @staticmethod
+    def parse_matrix_equation(equation: str):
+        alph = 'ABCDEFGHIJKLNOPQRSTUVWXYZ' # за исключением M
+        dict_mtrx = {}
+        for elem in equation: # считываем вместо букв - матрицы
+            if elem in alph and elem not in dict_mtrx:
+                dict_mtrx[elem] = Matrix.get_matrix(elem)
+
+        for key in dict_mtrx.keys(): # меняем буквы на матрицы 
+            equation = equation.replace(key, f'dict_mtrx["{key}"]')
+
+        try: 
+            return eval(equation)
+        except:
+            return 'Посчитать не удалось'
+
+
+    # консольное считывание матрицы
+    @staticmethod
+    def get_matrix(name: str):
+        m = int(input(f'Введите кол-во строк матрицы {name}:\n'))
+        n = int(input(f'Введите кол-во столбцов матрицы {name}:\n'))
+        mtrx = Matrix(m, n)
+        for i in range(m):
+            for j in range(n):
+                # пока принимаем только числа
+                mtrx[i][j] = float(input(f'Введите элемент a({i+1}, {j+1}):\n'))
+        return mtrx
+

@@ -30,4 +30,4 @@ arr2 = Matrix([
     [2, -3]
 ])
 print(Matrix.dot(arr1, arr2) + 7)
-
+print(Matrix.parse_matrix_equation(input('Вводите матрицы Заглавными латинскими буквами, не использовать M:\n')))
