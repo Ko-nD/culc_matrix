@@ -55,7 +55,7 @@ class Matrix:
 
     def __get_op(self, other, op):
         n, m = self.shape()
-        if isinstance(other, float) or isinstance(other, int):
+        if isinstance(other, float) or isinstance(other, int) or isinstance(other, complex):
             result = [[op(other, self[i][j]) for j in range(m)] for i in range(n)]
         else:
             if self.shape() == other.shape():
@@ -94,9 +94,9 @@ class Matrix:
     def __rtruediv__(self, other):
         return self / other
 
-    # ====================Нахождение лучшей строки=================================
-    def best_line(self):
-
+    def __best_line(self):
+        """Нахождение лучшей строки для вычисления определителя"""
+        # TODO: зарефакторить код
         h_dict = {}
         maxim = 0
         for k, v in enumerate(self):
@@ -112,13 +112,6 @@ class Matrix:
                     h_dict[k] = [maxim, sum(map(abs, v))]
             else:
                 h_dict[k] = [maxim, sum(map(abs, v))]
-        #         minim = 2**64
-        #         for k, v in h_dict.items():
-        #             if minim > v[1]:
-        #                 minim = v[1]
-        #         sp = [k for k, v in h_dict.items() if v[1] != minim ]
-        #         for i in sp:
-        #             del h_dict[i]
 
         return list(h_dict.keys())[0]
 
@@ -127,14 +120,16 @@ class Matrix:
 
     # ======================Рекурсивный определитель===============================
     def det(self):
-        assert self.shape()[0] == self.shape()[1], 'Не квадратная'
-        line = self.best_line()
+        n, m = self.shape()
+        assert n == m, 'Не квадратная'
+        line = self.__best_line()
         summ = 0
-        if self.shape() == [1, 1]:
+        if n == m == 1:
             return self[0][0]
         else:
             for ind, elem in enumerate(self[line]):
                 if elem != 0:
+                    # TODO: переписать на срезы
                     matr = copy.deepcopy(self)
                     for i in range(len(matr)):
                         del matr[i][ind]
@@ -162,7 +157,7 @@ class Matrix:
         # считываем кол-во строк и столбцов матриц
         m1, n1 = first.shape()  # m - строки, n - столбцы
         m2, n2 = second.shape()
-        assert n1 == m2, 'Не правильная размерность матриц'
+        assert n1 == m2, 'Неправильная размерность матриц'
 
         mtrx = Matrix(m1, n2)
         for i in range(m1):  # кол-во строк первой
@@ -183,15 +178,14 @@ class Matrix:
             if elem in alph and elem not in arr_mtrx and equation[i + 1] != 'a':
                 arr_mtrx += elem
                 exec(f'{elem}=Matrix.get_by_console("{elem}")')
-
         try:
             return eval(equation)
         except:
             return 'Посчитать не удалось'
 
-    # консольное считывание матрицы
     @staticmethod
     def get_by_console(name: str):
+        """Консольное считывание матрицы"""
         m = int(input(f'Введите кол-во строк матрицы {name}:\n'))
         n = int(input(f'Введите кол-во столбцов матрицы {name}:\n'))
         mtrx = Matrix(m, n)
