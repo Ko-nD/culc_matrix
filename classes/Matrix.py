@@ -314,13 +314,13 @@ class Matrix:
     # считывание матричного уравнения и его решение 
     @staticmethod
     def do_equation(equation: str):
-        alph = 'ABCDEFGHIJKLNOPQRSTUVWXYZ' # за исключением M
+        alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 
         arr_mtrx = ''
-        for elem in equation: # считываем вместо букв - матрицы
-            if elem in alph and elem not in arr_mtrx:
+        for i, elem in enumerate(equation): # считываем вместо букв - матрицы
+            if elem in alph and elem not in arr_mtrx and equation[i+1] != 'a':
                 arr_mtrx += elem
                 exec(f'{elem}=Matrix.get_by_console("{elem}")')
-                
+
         try: 
             return eval(equation)
         except:
