@@ -339,3 +339,21 @@ class Matrix:
                 mtrx[i][j] = float(input(f'Введите элемент a({i+1}, {j+1}):\n'))
         return mtrx
 
+
+
+    # чтение матрицы с цсв
+    @staticmethod
+    def read_csv(path='./data/', file_name='matrix.csv', delimiter=' '):
+        return Matrix([[float(token) for token in line.split(delimiter)] for line in open(path+file_name)])
+
+    
+        # чтение матрицы с цсв
+    @staticmethod
+    def write_csv(mtrx, path='./data/', file_name='result.csv', delimiter=' '):
+        with open(path+file_name, 'w') as f:
+            for row in mtrx:
+                print(delimiter.join(map(repr, row)), file=f)
+        
+
+
+
