@@ -289,6 +289,14 @@ class Matrix:
             string += '\n'
         return string
 
+    
+    # запись матрицы в цсв
+    def write_csv(self, path='./data/', file_name='result.csv', delimiter=' '):
+        with open(path+file_name, 'w') as f:
+            for row in self:
+                print(delimiter.join(map(repr, row)), file=f)
+        print('Матрица успешно записана!')
+
 
 # скалярное умножение матриц
     @staticmethod
@@ -340,20 +348,16 @@ class Matrix:
         return mtrx
 
 
-
     # чтение матрицы с цсв
     @staticmethod
     def read_csv(path='./data/', file_name='matrix.csv', delimiter=' '):
         return Matrix([[float(token) for token in line.split(delimiter)] for line in open(path+file_name)])
 
     
-        # чтение матрицы с цсв
+    # запись матрицы в цсв
     @staticmethod
-    def write_csv(mtrx, path='./data/', file_name='result.csv', delimiter=' '):
+    def write_matrix_to_csv(matrix, path='./data/', file_name='result.csv', delimiter=' '):
         with open(path+file_name, 'w') as f:
-            for row in mtrx:
+            for row in matrix:
                 print(delimiter.join(map(repr, row)), file=f)
-        
-
-
-
+        print('Матрица успешно записана!')

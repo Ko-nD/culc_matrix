@@ -30,6 +30,7 @@ arr2 = Matrix([
     [2, -3]
 ])
 print(Matrix.dot(arr1, arr2) + 7)
-print(Matrix.read_csv())
-Matrix.write_csv(arr1)
+arr1.write_csv()
+
+
 #print(Matrix.do_equation(input('Вводите матрицы Заглавными латинскими буквами:\n')))
