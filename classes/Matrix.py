@@ -71,9 +71,13 @@ class Matrix:
         return self + other
 
     def __mul__(self, other):
+        if isinstance(self, Matrix) and isinstance(other, Matrix):
+            return Matrix.dot(self, other)
         return self.__get_op(other, lambda x, y: x * y)
 
     def __rmul__(self, other):
+        if isinstance(self, Matrix) and isinstance(other, Matrix):
+            return Matrix.dot(self, other)
         return self * other
 
     def __sub__(self, other):
@@ -172,7 +176,7 @@ class Matrix:
     # считывание матричного уравнения и его решение
     @staticmethod
     def do_equation(equation: str):
-        alph = 'ABCDEFGHIJKLNOPQRSTUVWXYZ'
+        alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         arr_mtrx = ''
         for i, elem in enumerate(equation):  # считываем вместо букв - матрицы
             if elem in alph and elem not in arr_mtrx:
