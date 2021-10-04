@@ -172,10 +172,10 @@ class Matrix:
     # считывание матричного уравнения и его решение
     @staticmethod
     def do_equation(equation: str):
-        alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        alph = 'ABCDEFGHIJKLNOPQRSTUVWXYZ'
         arr_mtrx = ''
         for i, elem in enumerate(equation):  # считываем вместо букв - матрицы
-            if elem in alph and elem not in arr_mtrx and equation[i + 1] != 'a':
+            if elem in alph and elem not in arr_mtrx:
                 arr_mtrx += elem
                 exec(f'{elem}=Matrix.get_by_console("{elem}")')
         try:
