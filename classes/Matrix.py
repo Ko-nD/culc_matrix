@@ -32,6 +32,10 @@ class Matrix:
                 return False
         return True
 
+    @staticmethod
+    def get_minor(mtrx, i, j):
+        return [row[:j] + row[j+1:] for row in (mtrx[:i]+mtrx[i+1:])]
+
     def transpose(self):
         matrix_T = [[0 for j in range(len(self.matrix))] for i in range(len(self.matrix[0]))]
 
@@ -126,20 +130,15 @@ class Matrix:
     def det(self):
         n, m = self.shape()
         assert n == m, 'Не квадратная'
+        if n == 2:
+            return self[0][0] * self[1][1] - self[0][1] * self[1][0]
+
         line = self.__best_line()
         summ = 0
-        if n == m == 1:
-            return self[0][0]
-        else:
-            for ind, elem in enumerate(self[line]):
-                if elem != 0:
-                    # TODO: переписать на срезы
-                    matr = copy.deepcopy(self)
-                    for i in range(len(matr)):
-                        del matr[i][ind]
-                    del matr[line]
-                    summ += ((-1) ** (ind + line)) * (matr.det()) * elem
-            return summ
+        for j, elem in enumerate(self[line]):
+            if elem != 0:
+                summ += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
+        return summ
 
     def __str__(self):
         string = ''
