@@ -197,7 +197,7 @@ class Matrix:
         for i in range(m):
             for j in range(n):
                 # пока принимаем только числа
-                mtrx[i][j] = float(input(f'Введите элемент a({i + 1}, {j + 1}):\n'))
+                mtrx[i][j] = float(input(f'Введите элемент {name.lower()}({i + 1}, {j + 1}):\n'))
         return mtrx
 
     # чтение матрицы с цсв
