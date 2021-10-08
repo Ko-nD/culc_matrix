@@ -130,6 +130,8 @@ class Matrix:
     def det(self):
         n, m = self.shape()
         assert n == m, 'Не квадратная'
+        if n == 1:
+            return self[0][0]
         if n == 2:
             return self[0][0] * self[1][1] - self[0][1] * self[1][0]
 
