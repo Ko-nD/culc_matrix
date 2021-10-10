@@ -142,6 +142,30 @@ class Matrix:
                 summ += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
         return summ
 
+# норма по строке
+    def norm_by_row(self):
+        m, n = self.shape()
+        max_norm = 0
+        for i in range(m):
+            row_sum = 0 
+            for j in range(n):
+                row_sum += abs(self[i][j])
+            if row_sum > max_norm:
+                max_norm = row_sum
+        return max_norm
+
+# норма по столбцу
+    def norm_by_col(self):
+        m, n = self.shape()
+        max_norm = 0
+        for j in range(n):
+            col_sum = 0 
+            for i in range(m):
+                col_sum += abs(self[i][j])
+            if col_sum > max_norm:
+                max_norm = col_sum
+        return max_norm
+
     def __str__(self):
         string = ''
         for line in self.matrix:
