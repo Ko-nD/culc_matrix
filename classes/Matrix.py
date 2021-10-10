@@ -142,7 +142,7 @@ class Matrix:
                 summ += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
         return summ
 
-# норма по строке
+    # норма по строке
     def norm_by_row(self):
         m, n = self.shape()
         max_norm = 0
@@ -154,7 +154,7 @@ class Matrix:
                 max_norm = row_sum
         return max_norm
 
-# норма по столбцу
+    # норма по столбцу
     def norm_by_col(self):
         m, n = self.shape()
         max_norm = 0
@@ -165,6 +165,15 @@ class Matrix:
             if col_sum > max_norm:
                 max_norm = col_sum
         return max_norm
+
+    # Евклидова норма (корень квадратный из суммы квадратов всех элементов матрицы)
+    def norm_by_euclid(self):
+        m, n = self.shape()
+        norm = 0
+        for i in range(m):
+            for j in range(n):
+                norm += self[i][j] ** 2
+        return norm ** (1/2) 
 
     def __str__(self):
         string = ''
@@ -213,7 +222,7 @@ class Matrix:
             return 'Посчитать не удалось'
 
     @staticmethod
-    def get_by_console(name: str):
+    def get_by_console(name = ''):
         """Консольное считывание матрицы"""
         m = int(input(f'Введите кол-во строк матрицы {name}:\n'))
         n = int(input(f'Введите кол-во столбцов матрицы {name}:\n'))
