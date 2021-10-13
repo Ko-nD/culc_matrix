@@ -146,14 +146,16 @@ class Matrix:
     def swap_rows(self, i1: int, i2: int):
         self[i1], self[i2] = self[i2], self[i1]
 
-    # деление строки с индексом i на число devider
-    def devide_row_by_number(self, i, devider):
+    # деление строки с индексом i на число devider начиная с j-го элемента
+    def devide_row_by_number(self, i, devider, j=0):
         assert devider != 0, 'Деление строки на ноль'
-        self[i] = [elem / devider for elem in self[i]]
+        for j in range(j, self.shape()[1]):
+            self[i][j] /= devider 
 
-    # вычитание из строки i1 - строку i2 умноженную на число k
-    def combine_rows(self, i1, i2, k):
-        self[i1] = [self[i1][j] - k * self[i2][j] for j in range(self.shape()[1])]
+    # вычитание из строки i1 - строку i2 умноженную на число k начиная с j-го элемента
+    def combine_rows(self, i1, i2, k, j=0):
+        for j in range(j, self.shape()[1]):
+            self[i1][j] -= k * self[i2][j] 
 
     #возвращает индекс строки максимального элемента столбца j и сам элемент
     def get_index_max_elem_in_col(self, j: int):
@@ -174,9 +176,9 @@ class Matrix:
             index = self.get_index_max_elem_in_col(i)
             if i != index:
                 self.swap_rows(i, index)
-            self.devide_row_by_number(i, self[i][i])
+            self.devide_row_by_number(i, self[i][i], j=i)
             for i2 in range(i, m-1):
-                self.combine_rows(i2+1, i, self[i2+1][i])
+                self.combine_rows(i2+1, i, self[i2+1][i], j=i)
 
         
     # норма по строке
