@@ -143,10 +143,10 @@ class Matrix:
         return summ
 
     # меняет строки местами i1, i2 - номера соотвествующих строк, индексация с нуля 
-    def swap_rows(self, i1, i2):
+    def swap_rows(self, i1: int, i2: int):
         self[i1], self[i2] = self[i2], self[i1]
 
-    # деление строки на число
+    # деление строки с индексом i на число devider
     def devide_row_by_number(self, i, devider):
         assert devider != 0, 'Деление строки на ноль'
         self[i] = [elem / devider for elem in self[i]]
@@ -155,7 +155,18 @@ class Matrix:
     def combine_rows(self, i1, i2, k):
         self[i1] = [self[i1][j] - k * self[i2][j] for j in range(self.shape()[1])]
 
-
+    #возвращает индекс строки максимального элемента столбца j
+    def get_index_max_elem_in_col(self, j: int):
+        m, n = self.shape()
+        assert j >= 0 and j <= n, 'Столбца с таким номером не существует'
+        max_elem = 0
+        for i in range(m):
+            elem = self[i][j]
+            if elem > max_elem:
+                max_elem = elem
+                index = i
+        return index
+        
     # норма по строке
     def norm_by_row(self):
         m, n = self.shape()
