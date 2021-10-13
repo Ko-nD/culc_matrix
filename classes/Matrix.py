@@ -142,6 +142,20 @@ class Matrix:
                 summ += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
         return summ
 
+    # меняет строки местами i1, i2 - номера соотвествующих строк, индексация с нуля 
+    def swap_rows(self, i1, i2):
+        self[i1], self[i2] = self[i2], self[i1]
+
+    # деление строки на число
+    def devide_row_by_number(self, i, devider):
+        assert devider != 0, 'Деление строки на ноль'
+        self[i] = [elem / devider for elem in self[i]]
+
+    # вычитание из строки i1 - строку i2 умноженную на число k
+    def combine_rows(self, i1, i2, k):
+        self[i1] = [self[i1][j] - k * self[i2][j] for j in range(self.shape()[1])]
+
+
     # норма по строке
     def norm_by_row(self):
         m, n = self.shape()
