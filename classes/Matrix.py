@@ -135,19 +135,19 @@ class Matrix:
 
     def swap_rows(self, i1: int, i2: int):
         """
-        Меняет строки местами i1, i2 - номера соотвествующих строк, индексация с нуля
-        :param i1: строка 1
-        :param i2: строка 2
+        Меняет строки с индексами i1 и i2 местами
+        :param i1: индекс 1-ой строки 
+        :param i2: индекс 2-ой строки
         """
         self[i1], self[i2] = self[i2], self[i1]
 
     def devide_row_by_number(self, i, devider, j=0):
         """
-        Деление строки с индексом i на число devider начиная с j-го элемента
-        :param i:
-        :param devider:
-        :param j:
-        :return:
+        Деление i-ой строки на число devider начиная с j-го элемента
+        :param i: индекс строки 
+        :param devider: делитель строки
+        :param j: индекс элемента строки с которого начинается(включительно) деление
+        :return: 
         """
         assert devider != 0, 'Деление строки на ноль'
         for j in range(j, self.shape()[1]):
@@ -155,25 +155,21 @@ class Matrix:
 
     def combine_rows(self, i1, i2, k, j=0):
         """
-        Вычитание из строки i1 - строку i2 умноженную на число k начиная с j-го элемента
-        :param i1:
-        :param i2:
-        :param k:
-        :param j:
+        Вычитание из i1-ой строки i2-ую строку умноженную на число k начиная с j-го элемента
+        :param i1: индекс строки из которой вычитают
+        :param i2: индекс вычитаемой строки
+        :param k: множитель строки с индексом i2
+        :param j: индекс элемента строки с которого начинается(включительно) вычитание 
         :return:
         """
         for j in range(j, self.shape()[1]):
             self[i1][j] -= k * self[i2][j] 
 
-<<<<<<< HEAD
-    # возвращает индекс строки максимального элемента столбца j
-=======
->>>>>>> fba82a60f0de3c258d9ff49a35bb062cee23931d
-    def get_index_max_elem_in_col(self, j: int):
+    def get_index_max_elem_in_col(self, j=0):
         """
-        возвращает индекс строки максимального элемента столбца j и сам элемент
-        :param j:
-        :return:
+        получение индекса строки максимального элемента на j-ой позиции
+        :param j: позиция макс. элемента 
+        :return: int - индекс строки с макс. элементом на j-ой позиции
         """
         m, n = self.shape()
         assert 0 <= j <= n, 'Столбца с таким номером не существует'
@@ -197,7 +193,6 @@ class Matrix:
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
 
-<<<<<<< HEAD
     # обратный ход (для Гаусса) применяется к верхним диагональным матрицам
     def reverse_course(self):
         m, n = self.shape()
@@ -213,8 +208,6 @@ class Matrix:
         return answer
 
     # норма по строке
-=======
->>>>>>> fba82a60f0de3c258d9ff49a35bb062cee23931d
     def norm_by_row(self):
         """
         Вычисление нормы по строке
