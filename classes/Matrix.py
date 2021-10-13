@@ -193,7 +193,7 @@ class Matrix:
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
 
-    # обратный ход (для Гаусса) применяется к верхним диагональным матрицам
+    # обратный ход (для Гаусса) применяется к верхним треугольным матрицам
     def reverse_course(self):
         m, n = self.shape()
         X_arr = [0] * m
