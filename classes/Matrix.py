@@ -154,18 +154,19 @@ class Matrix:
         for j in range(j, self.shape()[1]):
             self[i1][j] -= k * self[i2][j] 
 
-    # возвращает индекс строки максимального элемента столбца j и сам элемент
+    # возвращает индекс строки максимального элемента столбца j
     def get_index_max_elem_in_col(self, j: int):
         m, n = self.shape()
         assert 0 <= j <= n, 'Столбца с таким номером не существует'
         max_elem = 0
         for i in range(m):
-            elem = self[i][j]
+            elem = abs(self[i][j])
             if elem > max_elem:
                 max_elem = elem
                 index = i
         return index
 
+    # приведение матрицы к верхней треугольной
     def upper_triangular(self):
         m, n = self.shape()
         for i in range(m):
@@ -176,6 +177,20 @@ class Matrix:
             self.devide_row_by_number(i, self[i][i], j=i)
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
+
+    # обратный ход (для Гаусса) применяется к верхним диагональным матрицам
+    def reverse_course(self):
+        m, n = self.shape()
+        X_arr = [0] * m
+        for i in range(m - 1, -1, -1):
+            X_arr[i] = self[i][-1] - sum(x * a for x, a in zip(X_arr[i+1:n], self[i][i+1:n]))
+        return X_arr
+    
+    def method_Gauss(self): #пока нет проверок, т.к. не понятно как объединять матрицы будем
+        self.upper_triangular()
+        answer = self.reverse_course()
+        print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
+        return answer
 
     # норма по строке
     def norm_by_row(self):
