@@ -101,30 +101,24 @@ class Matrix:
 
     def __best_line(self):
         """Нахождение лучшей строки для вычисления определителя"""
-        # TODO: зарефакторить код
         h_dict = {}
-        maxim = 0
         for k, v in enumerate(self):
             maxim = v.count(0)
             sp = [i for i in h_dict.values()]
-
             if len(h_dict) != 0:
                 if sp[0][0] == maxim:
                     h_dict[k] = [maxim, sum(map(abs, v))]
-
-                if sp[0][0] < maxim:
-                    h_dict = {}
-                    h_dict[k] = [maxim, sum(map(abs, v))]
+                elif sp[0][0] < maxim:
+                    h_dict = {k: [maxim, sum(map(abs, v))]}
             else:
                 h_dict[k] = [maxim, sum(map(abs, v))]
-
         return list(h_dict.keys())[0]
 
     def __delitem__(self, key):
         del self.matrix[key]
 
-    # ======================Рекурсивный определитель===============================
     def det(self):
+        """ Рекурсивный определитель """
         n, m = self.shape()
         assert n == m, 'Не квадратная'
         if n == 1:
@@ -139,23 +133,48 @@ class Matrix:
                 summ += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
         return summ
 
-    # меняет строки местами i1, i2 - номера соотвествующих строк, индексация с нуля 
     def swap_rows(self, i1: int, i2: int):
+        """
+        Меняет строки местами i1, i2 - номера соотвествующих строк, индексация с нуля
+        :param i1: строка 1
+        :param i2: строка 2
+        """
         self[i1], self[i2] = self[i2], self[i1]
 
-    # деление строки с индексом i на число devider начиная с j-го элемента
     def devide_row_by_number(self, i, devider, j=0):
+        """
+        Деление строки с индексом i на число devider начиная с j-го элемента
+        :param i:
+        :param devider:
+        :param j:
+        :return:
+        """
         assert devider != 0, 'Деление строки на ноль'
         for j in range(j, self.shape()[1]):
             self[i][j] /= devider 
 
-    # вычитание из строки i1 - строку i2 умноженную на число k начиная с j-го элемента
     def combine_rows(self, i1, i2, k, j=0):
+        """
+        Вычитание из строки i1 - строку i2 умноженную на число k начиная с j-го элемента
+        :param i1:
+        :param i2:
+        :param k:
+        :param j:
+        :return:
+        """
         for j in range(j, self.shape()[1]):
             self[i1][j] -= k * self[i2][j] 
 
+<<<<<<< HEAD
     # возвращает индекс строки максимального элемента столбца j
+=======
+>>>>>>> fba82a60f0de3c258d9ff49a35bb062cee23931d
     def get_index_max_elem_in_col(self, j: int):
+        """
+        возвращает индекс строки максимального элемента столбца j и сам элемент
+        :param j:
+        :return:
+        """
         m, n = self.shape()
         assert 0 <= j <= n, 'Столбца с таким номером не существует'
         max_elem = 0
@@ -178,6 +197,7 @@ class Matrix:
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
 
+<<<<<<< HEAD
     # обратный ход (для Гаусса) применяется к верхним диагональным матрицам
     def reverse_course(self):
         m, n = self.shape()
@@ -193,7 +213,13 @@ class Matrix:
         return answer
 
     # норма по строке
+=======
+>>>>>>> fba82a60f0de3c258d9ff49a35bb062cee23931d
     def norm_by_row(self):
+        """
+        Вычисление нормы по строке
+        :return: норма по строке
+        """
         m, n = self.shape()
         max_norm = 0
         for i in range(m):
@@ -204,8 +230,11 @@ class Matrix:
                 max_norm = row_sum
         return max_norm
 
-    # норма по столбцу
     def norm_by_col(self):
+        """
+        Вычисление нормы по столбцу
+        :return: норма по столбцу
+        """
         m, n = self.shape()
         max_norm = 0
         for j in range(n):
@@ -216,8 +245,11 @@ class Matrix:
                 max_norm = col_sum
         return max_norm
 
-    # Евклидова норма (корень квадратный из суммы квадратов всех элементов матрицы)
     def norm_by_euclid(self):
+        """
+        Вычисление Евклидовой нормы (корень квадратный из суммы квадратов всех элементов матрицы)
+        :return: Евклидова норма
+        """
         m, n = self.shape()
         norm = 0
         for i in range(m):
@@ -232,16 +264,16 @@ class Matrix:
             string += '\n'
         return string
 
-    # запись матрицы в цсв
     def write_csv(self, path='./data/', file_name='result.csv', delimiter=' '):
+        """ Запись матрицы в цсв """
         with open(path + file_name, 'w') as f:
             for row in self:
                 print(delimiter.join(map(repr, row)), file=f)
         print('Матрица успешно записана!')
 
-    # скалярное умножение матриц
     @staticmethod
     def dot(first, second):
+        """ Cкалярное умножение матриц """
         # считываем кол-во строк и столбцов матриц
         m1, n1 = first.shape()  # m - строки, n - столбцы
         m2, n2 = second.shape()
@@ -257,9 +289,9 @@ class Matrix:
 
         return mtrx
 
-    # считывание матричного уравнения и его решение
     @staticmethod
     def do_equation(equation: str):
+        """ Считывание матричного уравнения и его решение """
         alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         arr_mtrx = ''
         for i, elem in enumerate(equation):  # считываем вместо букв - матрицы
@@ -273,7 +305,7 @@ class Matrix:
 
     @staticmethod
     def get_by_console(name = ''):
-        """Консольное считывание матрицы"""
+        """ Консольное считывание матрицы """
         m = int(input(f'Введите кол-во строк матрицы {name}:\n'))
         n = int(input(f'Введите кол-во столбцов матрицы {name}:\n'))
         mtrx = Matrix(m, n)
@@ -283,16 +315,16 @@ class Matrix:
                 mtrx[i][j] = float(input(f'Введите элемент {name.lower()}({i + 1}, {j + 1}):\n'))
         return mtrx
 
-    # чтение матрицы с цсв
     @staticmethod
     def read_csv(path='./data/', file_name='matrix.csv', delimiter=' '):
+        """ Чтение матрицы из цсв """
         return Matrix.get_from_list(
             [[float(token) for token in line.split(delimiter)] for line in open(path + file_name)]
         )
 
-    # запись матрицы в цсв
     @staticmethod
     def write_matrix_to_csv(matrix, path='./data/', file_name='result.csv', delimiter=' '):
+        """ Запись матрицы в цсв """
         with open(path + file_name, 'w') as f:
             for row in matrix:
                 print(delimiter.join(map(repr, row)), file=f)
