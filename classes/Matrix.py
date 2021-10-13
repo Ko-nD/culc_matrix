@@ -155,7 +155,7 @@ class Matrix:
     def combine_rows(self, i1, i2, k):
         self[i1] = [self[i1][j] - k * self[i2][j] for j in range(self.shape()[1])]
 
-    #возвращает индекс строки максимального элемента столбца j
+    #возвращает индекс строки максимального элемента столбца j и сам элемент
     def get_index_max_elem_in_col(self, j: int):
         m, n = self.shape()
         assert j >= 0 and j <= n, 'Столбца с таким номером не существует'
@@ -166,6 +166,18 @@ class Matrix:
                 max_elem = elem
                 index = i
         return index
+
+    def upper_triangular(self):
+        m, n = self.shape()
+        for i in range(m):
+            #i совпадает с нужным j, так как идём поп диагонали
+            index = self.get_index_max_elem_in_col(i)
+            if i != index:
+                self.swap_rows(i, index)
+            self.devide_row_by_number(i, self[i][i])
+            for i2 in range(i, m-1):
+                self.combine_rows(i2+1, i, self[i2+1][i])
+
         
     # норма по строке
     def norm_by_row(self):
