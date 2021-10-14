@@ -147,7 +147,6 @@ class Matrix:
         :param i: индекс строки 
         :param devider: делитель строки
         :param j: индекс элемента строки с которого начинается(включительно) деление
-        :return: 
         """
         assert devider != 0, 'Деление строки на ноль'
         for j in range(j, self.shape()[1]):
@@ -159,8 +158,7 @@ class Matrix:
         :param i1: индекс строки из которой вычитают
         :param i2: индекс вычитаемой строки
         :param k: множитель строки с индексом i2
-        :param j: индекс элемента строки с которого начинается(включительно) вычитание 
-        :return:
+        :param j: индекс элемента строки с которого начинается(включительно) вычитание
         """
         for j in range(j, self.shape()[1]):
             self[i1][j] -= k * self[i2][j] 
@@ -169,7 +167,7 @@ class Matrix:
         """
         получение индекса строки максимального элемента на j-ой позиции
         :param j: позиция макс. элемента 
-        :return: int - индекс строки с макс. элементом на j-ой позиции
+        :return: индекс строки с макс. элементом на j-ой позиции
         """
         m, n = self.shape()
         assert 0 <= j <= n, 'Столбца с таким номером не существует'
@@ -181,8 +179,8 @@ class Matrix:
                 index = i
         return index
 
-    # приведение матрицы к верхней треугольной
     def upper_triangular(self):
+        """ приведение матрицы к верхней треугольной """
         m, n = self.shape()
         for i in range(m):
             # i совпадает с нужным j, так как идём поп диагонали
@@ -193,21 +191,22 @@ class Matrix:
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
 
-    # обратный ход (для Гаусса) применяется к верхним треугольным матрицам
     def reverse_course(self):
+        """ обратный ход (для Гаусса) применяется к верхним треугольным матрицам """
         m, n = self.shape()
         X_arr = [0] * m
         for i in range(m - 1, -1, -1):
             X_arr[i] = self[i][-1] - sum(x * a for x, a in zip(X_arr[i+1:n], self[i][i+1:n]))
         return X_arr
     
-    def method_Gauss(self): #пока нет проверок, т.к. не понятно как объединять матрицы будем
-        self.upper_triangular()
-        answer = self.reverse_course()
+    def method_Gauss(self):
+        """ решение СЛАУ методом Гаусса"""
+        # пока нет проверок, т.к. не понятно как объединять матрицы будем
+        self.upper_triangular() # приводим матрицу к верх.треугольной
+        answer = self.reverse_course() # делаем обратный ход и получаем ответы
         print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
         return answer
 
-    # норма по строке
     def norm_by_row(self):
         """
         Вычисление нормы по строке
