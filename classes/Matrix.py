@@ -30,8 +30,8 @@ class Matrix:
         return True
 
     @staticmethod
-    def get_minor(mtrx, i, j):
-        return [row[:j] + row[j+1:] for row in (mtrx[:i]+mtrx[i+1:])]
+    def get_minor(matrix, i, j):
+        return [row[:j] + row[j+1:] for row in (matrix[:i] + matrix[i + 1:])]
 
     def transpose(self):
         matrix_T = [[0 for j in range(len(self.matrix))] for i in range(len(self.matrix[0]))]
@@ -127,11 +127,11 @@ class Matrix:
             return self[0][0] * self[1][1] - self[0][1] * self[1][0]
 
         line = self.__best_line()
-        summ = 0
+        summa = 0
         for j, elem in enumerate(self[line]):
             if elem != 0:
-                summ += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
-        return summ
+                summa += ((-1) ** (j + line)) * Matrix.get_from_list(self.get_minor(self, i=line, j=j)).det() * elem
+        return summa
 
     def swap_rows(self, i1: int, i2: int):
         """
@@ -141,16 +141,16 @@ class Matrix:
         """
         self[i1], self[i2] = self[i2], self[i1]
 
-    def devide_row_by_number(self, i, devider, j=0):
+    def divide_row_by_number(self, i, divider, j=0):
         """
-        Деление i-ой строки на число devider начиная с j-го элемента
+        Деление i-ой строки на число divider начиная с j-го элемента
         :param i: индекс строки 
-        :param devider: делитель строки
+        :param divider: делитель строки
         :param j: индекс элемента строки с которого начинается(включительно) деление
         """
-        assert devider != 0, 'Деление строки на ноль'
+        assert divider != 0, 'Деление строки на ноль'
         for j in range(j, self.shape()[1]):
-            self[i][j] /= devider 
+            self[i][j] /= divider
 
     def combine_rows(self, i1, i2, k, j=0):
         """
@@ -177,7 +177,10 @@ class Matrix:
             if elem > max_elem:
                 max_elem = elem
                 index = i
-        return index
+        try:
+            return index
+        except:
+            print(f'В {j} столбце все значения 0')
 
     def upper_triangular(self):
         """ приведение матрицы к верхней треугольной """
@@ -187,7 +190,7 @@ class Matrix:
             index = self.get_index_max_elem_in_col(i)
             if i != index:
                 self.swap_rows(i, index)
-            self.devide_row_by_number(i, self[i][i], j=i)
+            self.divide_row_by_number(i, self[i][i], j=i)
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
 
@@ -271,41 +274,41 @@ class Matrix:
         m2, n2 = second.shape()
         assert n1 == m2, 'Неправильная размерность матриц'
 
-        mtrx = Matrix(m1, n2)
+        matrix = Matrix(m1, n2)
         for i in range(m1):  # кол-во строк первой
             for j in range(n2):  # кол-во столбцов второй
-                summ = 0
+                summa = 0
                 for index in range(n1):  # n1 == m2
-                    summ += first[i][index] * second[index][j]
-                mtrx[i][j] = summ
+                    summa += first[i][index] * second[index][j]
+                matrix[i][j] = summa
 
-        return mtrx
+        return matrix
 
     @staticmethod
     def do_equation(equation: str):
         """ Считывание матричного уравнения и его решение """
         alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        arr_mtrx = ''
+        arr_matrix = ''
         for i, elem in enumerate(equation):  # считываем вместо букв - матрицы
-            if elem in alph and elem not in arr_mtrx:
-                arr_mtrx += elem
+            if elem in alph and elem not in arr_matrix:
+                arr_matrix += elem
                 exec(f'{elem}=Matrix.get_by_console("{elem}")')
         try:
             return eval(equation)
-        except:
+        finally:
             return 'Посчитать не удалось'
 
     @staticmethod
-    def get_by_console(name = ''):
+    def get_by_console(name=''):
         """ Консольное считывание матрицы """
         m = int(input(f'Введите кол-во строк матрицы {name}:\n'))
         n = int(input(f'Введите кол-во столбцов матрицы {name}:\n'))
-        mtrx = Matrix(m, n)
+        matrix = Matrix(m, n)
         for i in range(m):
             for j in range(n):
                 # пока принимаем только числа
-                mtrx[i][j] = float(input(f'Введите элемент {name.lower()}({i + 1}, {j + 1}):\n'))
-        return mtrx
+                matrix[i][j] = float(input(f'Введите элемент {name.lower()}({i + 1}, {j + 1}):\n'))
+        return matrix
 
     @staticmethod
     def read_csv(path='./data/', file_name='matrix.csv', delimiter=' '):
