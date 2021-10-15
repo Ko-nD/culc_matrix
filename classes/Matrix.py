@@ -199,7 +199,7 @@ class Matrix:
         m, n = self.shape()
         X_arr = [0] * m
         for i in range(m - 1, -1, -1):
-            X_arr[i] = self[i][-1] - sum(x * a for x, a in zip(X_arr[i+1:n], self[i][i+1:n]))
+            X_arr[i] = self[i][m] - sum(x * a for x, a in zip(X_arr[i+1:m+1], self[i][i+1:m+1]))
         return X_arr
     
     def method_Gauss(self):
