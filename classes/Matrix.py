@@ -163,16 +163,16 @@ class Matrix:
         for j in range(j, self.shape()[1]):
             self[i1][j] -= k * self[i2][j] 
 
-    def get_index_max_elem_in_col(self, j=0):
+    def get_index_max_elem_in_col(self, j=0, start=0, end=0):
         """
         получение индекса строки максимального элемента на j-ой позиции
         :param j: позиция макс. элемента 
         :return: индекс строки с макс. элементом на j-ой позиции
         """
         m, n = self.shape()
-        assert 0 <= j <= n, 'Столбца с таким номером не существует'
+        assert 0 <= j <= n and 0 <= start <= end < m, 'Столбца с таким индеком не существует или указаны неверные границы'
         max_elem = 0
-        for i in range(m):
+        for i in range(start, end+1):
             elem = abs(self[i][j])
             if elem > max_elem:
                 max_elem = elem
@@ -182,17 +182,30 @@ class Matrix:
         except:
             print(f'В {j} столбце все значения 0')
 
-    def upper_triangular(self):
+    def upper_triangular(self, swap_rows=False):
         """ приведение матрицы к верхней треугольной """
         m, n = self.shape()
         for i in range(m):
             # i совпадает с нужным j, так как идём поп диагонали
-            index = self.get_index_max_elem_in_col(i)
-            if i != index:
-                self.swap_rows(i, index)
+            if swap_rows:
+                self.swap_rows(i, self.get_index_max_elem_in_col(j=i, start=i, end=m-1))
             self.divide_row_by_number(i, self[i][i], j=i)
+            # зануляем значения столбца под единицей
             for i2 in range(i, m-1):
                 self.combine_rows(i2+1, i, self[i2+1][i], j=i)
+
+    def lower_triangular(self, swap_rows=False):
+        """ приведение матрицы к верхней треугольной """
+        m, n = self.shape()
+        for i in range(m-1, 0, -1):
+            # i совпадает с нужным j, так как идём по диагонали
+            if swap_rows:
+                self.swap_rows(i, self.get_index_max_elem_in_col(j=i, start=0, end=i))
+            self.divide_row_by_number(i, self[i][i])
+            # зануляем значения столбца под единицей 
+            for i2 in range(i):
+                self.combine_rows(i2, i, self[i2][i])
+        self.divide_row_by_number(0, self[0][0])
 
     def reverse_course(self):
         """ обратный ход (для Гаусса) применяется к верхним треугольным матрицам """
@@ -205,8 +218,16 @@ class Matrix:
     def method_Gauss(self):
         """ решение СЛАУ методом Гаусса"""
         # пока нет проверок, т.к. не понятно как объединять матрицы будем
-        self.upper_triangular() # приводим матрицу к верх.треугольной
+        self.upper_triangular(swap_rows=True) # приводим матрицу к верх.треугольной
         answer = self.reverse_course() # делаем обратный ход и получаем ответы
+        print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
+        return answer
+
+    def method_Jordano_Gauss(self):
+        """ решение СЛАУ методом Жордана-Гаусса"""
+        self.upper_triangular(swap_rows=True)
+        self.upper_triangular()
+        answer = [self[i][i] for i in range(self.shape()[0])]
         print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
         return answer
 
