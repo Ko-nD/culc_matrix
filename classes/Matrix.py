@@ -1,5 +1,5 @@
 class Matrix:
-    def __init__(self, n=1, m=1):
+    def __init__(self, m=1, n=1): 
         __slots__ = 'matrix'
         assert n > 0, 'Неверные данные'
         assert m > 0, 'Неверные данные'
@@ -9,7 +9,7 @@ class Matrix:
         if n >= 0 and m >= 0:
             self.n = n
             self.m = m
-            self.matrix = [[0 for j in range(m)] for i in range(n)]
+            self.matrix = [[0] * n] * m
 
     @staticmethod
     def get_from_list(list_):
