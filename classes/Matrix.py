@@ -226,7 +226,7 @@ class Matrix:
     def method_Jordano_Gauss(self):
         """ решение СЛАУ методом Жордана-Гаусса"""
         self.upper_triangular(swap_rows=True)
-        self.upper_triangular()
+        self.lower_triangular()
         answer = [self[i][i] for i in range(self.shape()[0])]
         print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
         return answer
