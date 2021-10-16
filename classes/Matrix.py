@@ -310,6 +310,20 @@ class Matrix:
         """ Создание единичной матрицы размером n на n """
         assert isinstance(n, int), 'Размерность задана не целочисленно'
         return Matrix.get_from_list([[1 if i == j else 0 for i in range(n)] for j in range(n)])
+    
+    @staticmethod
+    def union(*args):
+        """Объединение произвольного кол-ва Матриц по столбцам"""
+        assert args != None, 'Матрицы не были переданы'
+        step = 0
+        for matrix in args:
+            assert isinstance(matrix, Matrix), 'Передан не матричный экземпляр'
+            new_m = matrix.shape()[0]
+            if step == 0:
+                old_m = new_m
+                continue 
+            assert new_m == old_m, 'Размерность матриц по строкам не совпадает'
+        return Matrix.get_from_list([[row for rows in [matrix[i] for matrix in args] for row in rows] for i in range(old_m)])
 
     @staticmethod
     def do_equation(equation: str):
