@@ -227,7 +227,8 @@ class Matrix:
         """ решение СЛАУ методом Жордана-Гаусса"""
         self.upper_triangular(swap_rows=True)
         self.lower_triangular()
-        answer = [self[i][i] for i in range(self.shape()[0])]
+        m = self.shape()[0]
+        answer = [self[i][m] for i in range(m)]
         print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
         return answer
 
@@ -317,13 +318,19 @@ class Matrix:
         assert args != None, 'Матрицы не были переданы'
         step = 0
         for matrix in args:
-            assert isinstance(matrix, Matrix), 'Передан не матричный экземпляр'
+            assert isinstance(matrix, Matrix), 'Передан не экземпляр класса Matrix'
             new_m = matrix.shape()[0]
             if step == 0:
                 old_m = new_m
                 continue 
             assert new_m == old_m, 'Размерность матриц по строкам не совпадает'
         return Matrix.get_from_list([[elem for row in [matrix[i] for matrix in args] for elem in row] for i in range(old_m)])
+
+    def separation(matrix, *args):
+        assert isinstance(matrix, Matrix), 'Передан не экземпляр класса Matrix'
+        if args == None: 
+            return matrix
+        pass
 
     @staticmethod
     def do_equation(equation: str):
