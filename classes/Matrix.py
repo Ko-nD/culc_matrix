@@ -306,6 +306,11 @@ class Matrix:
         return matrix
 
     @staticmethod
+    def unit(n):
+        assert isinstance(n, int), 'Размерность задана не целочисленно'
+        return Matrix.get_from_list([[1 if i == j else 0 for i in range(n)] for j in range(n)])
+
+    @staticmethod
     def do_equation(equation: str):
         """ Считывание матричного уравнения и его решение """
         alph = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
