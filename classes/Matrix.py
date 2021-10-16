@@ -307,6 +307,7 @@ class Matrix:
 
     @staticmethod
     def unit(n):
+        """ Создание единичной матрицы размером n на n """
         assert isinstance(n, int), 'Размерность задана не целочисленно'
         return Matrix.get_from_list([[1 if i == j else 0 for i in range(n)] for j in range(n)])
 
