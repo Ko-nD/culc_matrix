@@ -323,7 +323,7 @@ class Matrix:
                 old_m = new_m
                 continue 
             assert new_m == old_m, 'Размерность матриц по строкам не совпадает'
-        return Matrix.get_from_list([[row for rows in [matrix[i] for matrix in args] for row in rows] for i in range(old_m)])
+        return Matrix.get_from_list([[elem for row in [matrix[i] for matrix in args] for elem in row] for i in range(old_m)])
 
     @staticmethod
     def do_equation(equation: str):
