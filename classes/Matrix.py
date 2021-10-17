@@ -334,6 +334,72 @@ class Matrix:
         if args == None: 
             return matrix
         pass
+# =====================================Якоби===========================================
+    @staticmethod
+    def __diag_conv(self):
+        '''
+        Расстановка строк в правильном порядке
+        (если диоганольность нарушена)
+        '''
+        a = []
+        count = 0
+        for line in self:
+            count += 1
+            for index, elem in enumerate(line):
+                if 2*abs(elem) > sum(list(map(abs, line))):
+                    a.append(index)
+                    break
+
+        if len(set(a)) == count:
+            return a
+        else:
+            return False
+
+    def jacoby(self, other, c):
+        '''
+        Сам Якоби
+        Matrix.jacoby(other, c)
+        other - Ответы (просто список)
+        c - точность ( 1<c<0 )
+        '''
+        import copy
+        indexes = Matrix().__diag_conv(self.matrix)
+        other = [i[0] for i in other]
+        if indexes:
+            solves = [1 for i in range(len(indexes))]
+            new_sol = [0 for i in range(len(indexes))]
+            while max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c:
+
+                solves = copy.deepcopy(new_sol)
+                for key, val in enumerate(indexes):
+                    summ = 0
+                    for ind, elem in enumerate(self[key]):
+                        if ind != val:
+                            summ += ((-elem)*solves[ind])/self[key][val]
+                    new_sol[val] = other[key]/self[key][val] + summ
+
+
+            return Matrix.get_from_list([[i] for i in new_sol])
+        else:
+            return False
+        
+# =================================Обратная========================================
+    def revers_matrix(self):
+        '''
+        Обратная Матрица (просто применить к экземпляру)
+        (Возвращает)
+        '''
+        a = [[0 for j in range(len(self[0]))] for i in range(len(self))]
+        b = Matrix.get_from_list(self).det()
+        for i in range(len(self)):
+            for j in range(len(self[0])):
+                a[i][j] = ((-1)**(i+j))*(Matrix.get_from_list(Matrix().get_minor(self, i, j))).det()
+        a = Matrix.get_from_list(a).transpose()
+        return a/b
+# =================================================================================
+
+
+
 
     @staticmethod
     def do_equation(equation: str):
