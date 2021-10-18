@@ -343,6 +343,11 @@ class Matrix:
         '''
         a = []
         count = 0
+        # Идея такая:  
+        # В строке может быть только один Максимальный элемент
+        # Мы его ищем и формируем список 
+        # Если в списке совпадают найденные индексы, то мы 
+        # возвращаем False
         for line in self:
             count += 1
             for index, elem in enumerate(line):
@@ -363,20 +368,21 @@ class Matrix:
         c - точность ( 1<c<0 )
         '''
         
-        indexes = Matrix().__diag_conv(self.matrix)
-        other = [i[0] for i in other]
-        if indexes:
-            solves = [1 for i in range(len(indexes))]
-            new_sol = [0 for i in range(len(indexes))]
-            while max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c:
+        indexes = Matrix().__diag_conv(self.matrix) # То как надо переставить строки
+        other = [i[0] for i in other] # из списка списков делаем список
+        if indexes: # Если строки можно переставить в диоганально сильную матрицу
+            solves = [1 for i in range(len(indexes))] # Вектор ответов до
+            new_sol = [0 for i in range(len(indexes))] # Вектор ответов после
+            while max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c: # Проверка на точность
 
-                solves = new_sol.copy()
-                for key, val in enumerate(indexes):
+                solves = new_sol.copy() # Присваиваем старым зн. новые и пересчитываем
+                # Встроенные работает быстрее переприсваивания 
+                for key, val in enumerate(indexes): #  Мы должны из строк выражать разные переменны
                     summ = 0
                     for ind, elem in enumerate(self[key]):
                         if ind != val:
                             summ += ((-elem)*solves[ind])/self[key][val]
-                    new_sol[val] = other[key]/self[key][val] + summ
+                    new_sol[val] = other[key]/self[key][val] + summ # Решение
 
 
             return Matrix.get_from_list([[i] for i in new_sol])
