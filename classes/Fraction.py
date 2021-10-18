@@ -1,7 +1,7 @@
-from .meta import Singleton
+from .meta import SingletonValue
 
 
-class Fraction(metaclass=Singleton):
+class Fraction(metaclass=SingletonValue):
     """
         Класс для расчетов в обычных дробях
     """
