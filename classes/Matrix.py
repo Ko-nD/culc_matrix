@@ -362,7 +362,7 @@ class Matrix:
         other - Ответы (просто список)
         c - точность ( 1<c<0 )
         '''
-        import copy
+        
         indexes = Matrix().__diag_conv(self.matrix)
         other = [i[0] for i in other]
         if indexes:
@@ -370,7 +370,7 @@ class Matrix:
             new_sol = [0 for i in range(len(indexes))]
             while max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c:
 
-                solves = copy.deepcopy(new_sol)
+                solves = new_sol.copy()
                 for key, val in enumerate(indexes):
                     summ = 0
                     for ind, elem in enumerate(self[key]):
