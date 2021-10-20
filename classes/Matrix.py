@@ -314,8 +314,11 @@ class Matrix:
     
     @staticmethod
     def union(*args):
-        """Объединение произвольного кол-ва Матриц по столбцам"""
-        print()
+        """
+        Объединение произвольного кол-ва Матриц по столбцам
+        :param *args: экземпляры класса Matrix
+        :return: объединённая матрица типа Matrix
+        """
         assert len(args) != 0, 'Матрицы не были переданы'
         step = 0
         for matrix in args:
