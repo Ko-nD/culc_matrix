@@ -11,6 +11,15 @@ class Matrix:
             self.m = m
             self.matrix = [[0] * n] * m
 
+    def __getitem__(self, key):
+        return self.matrix[key]
+
+    def __setitem__(self, key, value):
+        self.matrix[key] = value
+
+    def __len__(self):
+        return len(self.matrix)
+
     @staticmethod
     def get_from_list(list_):
         if not Matrix.__check_shape(list_):
@@ -34,25 +43,16 @@ class Matrix:
         return [row[:j] + row[j+1:] for row in (matrix[:i] + matrix[i + 1:])]
 
     def transpose(self):
-        matrix_T = [[0 for j in range(len(self.matrix))] for i in range(len(self.matrix[0]))]
+        matrix_T = [[0 for j in range(len(self))] for i in range(len(self[0]))]
 
-        for i in range(len(self.matrix[0])):
-            for j in range(len(self.matrix)):
-                matrix_T[i][j] = self.matrix[j][i]
+        for i in range(len(self[0])):
+            for j in range(len(self)):
+                matrix_T[i][j] = self[j][i]
 
         return Matrix.get_from_list(matrix_T)
 
     def shape(self):
-        return len(self.matrix), len(self.matrix[0])
-
-    def __getitem__(self, key):
-        return self.matrix[key]
-
-    def __setitem__(self, key, value):
-        self.matrix[key] = value
-
-    def __len__(self):
-        return len(self.matrix)
+        return len(self), len(self[0])
 
     def __get_op(self, other, op):
         n, m = self.shape()
@@ -85,7 +85,7 @@ class Matrix:
         return self + (-1) * other
 
     def __rsub__(self, other):
-        return self + (-1) * other
+        return self.__get_op(other, lambda x, y: y - x)
 
     def __floordiv__(self, other):
         return self.__get_op(other, lambda x, y: x // y)
@@ -115,7 +115,7 @@ class Matrix:
         return list(h_dict.keys())[0]
 
     def __delitem__(self, key):
-        del self.matrix[key]
+        del self[key]
 
     def det(self):
         """ Рекурсивный определитель """
@@ -276,7 +276,7 @@ class Matrix:
 
     def __str__(self):
         string = ''
-        for line in self.matrix:
+        for line in self:
             string += ', '.join([str(i) for i in line])
             string += '\n'
         return string

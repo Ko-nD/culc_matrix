@@ -50,3 +50,6 @@ class ComplexFraction(metaclass=SingletonValue):
 
     def __rpow__(self, other):
         return pow(other, self.compute())
+
+    def __str__(self):
+        return f'ComplexFraction({self.real},{self.img})'

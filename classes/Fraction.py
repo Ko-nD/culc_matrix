@@ -67,3 +67,6 @@ class Fraction(metaclass=SingletonValue):
 
     def __rpow__(self, other):
         return other ** self.compute()
+
+    def __str__(self):
+        return f'Fraction({self.numerator},{self.denominator})'
