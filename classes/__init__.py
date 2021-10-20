@@ -5,19 +5,20 @@ from .SparseMatrix import *
 from .Symbol import *
 
 
-def get_eigen_values(matrix: Matrix, step=0.001, eps=0.001):
+def get_eigen_values(matrix: Matrix, step=0.001, eps=0.001, iterations=1000000):
     """
     Функция для вычисления собственных значений матрицы
     :param matrix: матрица, для которой необходимо вычислить собственные значения
     :param step: шаг вычислений
     :param eps: число, значение меньше которого является нулем
+    :param iterations: количество итерация для вычисления собственных значений
     :return: список собственных значений
     """
     lambda_ = Symbol()
     new_matrix = matrix - SparseMatrix.get_diag_matrix(matrix.n, matrix.m, lambda_)
     func = new_matrix.det().get_function()
     result = []
-    for i in range(1000000):
+    for i in range(iterations):
         if abs(func(i * step)) < eps:
             result.append(i * step)
         if abs(func(-i * step)) < eps:
