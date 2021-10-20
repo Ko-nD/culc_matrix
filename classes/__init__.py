@@ -6,6 +6,13 @@ from .Symbol import *
 
 
 def get_eigen_values(matrix: Matrix, step=0.001, eps=0.001):
+    """
+    Функция для вычисления собственных значений матрицы
+    :param matrix: матрица, для которой необходимо вычислить собственные значения
+    :param step: шаг вычислений
+    :param eps: число, значение меньше которого является нулем
+    :return: список собственных значений
+    """
     lambda_ = Symbol()
     new_matrix = matrix - SparseMatrix.get_diag_matrix(matrix.n, matrix.m, lambda_)
     func = new_matrix.det().get_function()
