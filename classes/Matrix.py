@@ -358,7 +358,7 @@ class Matrix:
         if len(set(a)) == count:
             return a
         else:
-            return False
+            return [i for i in range(count)]
 
     def jacoby(self, other, c):
         '''
@@ -367,14 +367,16 @@ class Matrix:
         other - Ответы (просто список)
         c - точность ( 1<c<0 )
         '''
-        
+        # Создаем нулевую обратную матрицу
+        revers_matrix = [[0 for j in range(self.shape()[0])] for i in range(self.shape()[1])]
         indexes = Matrix().__diag_conv(self.matrix) # То как надо переставить строки
         other = [i[0] for i in other] # из списка списков делаем список
         if indexes: # Если строки можно переставить в диоганально сильную матрицу
             solves = [1 for i in range(len(indexes))] # Вектор ответов до
             new_sol = [0 for i in range(len(indexes))] # Вектор ответов после
-            while max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c: # Проверка на точность
-
+            count = 0
+            while (max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c) or (count < 1000): # Проверка на точность
+                count += 1
                 solves = new_sol.copy() # Присваиваем старым зн. новые и пересчитываем
                 # Встроенные работает быстрее переприсваивания 
                 for key, val in enumerate(indexes): #  Мы должны из строк выражать разные переменны
@@ -383,25 +385,37 @@ class Matrix:
                         if ind != val:
                             summ += ((-elem)*solves[ind])/self[key][val]
                     new_sol[val] = other[key]/self[key][val] + summ # Решение
+                    # Подсчет обратной матрицы, тк в ней будет n Слау,
+                    # Мы можем итеррироваться по n решениям Предыдущей СЛАУ
+                    # Можно я не буду объснять как мы считаем слау по якоби?
+                    # Единственное что, тут значения обновляются один за одним 
+                    # А не векторами
+                    for i in range(self.shape()[0]):
+                        summ = 0
+                        for ind, elem in enumerate(self[i]):
+                            if ind != i:
+                                summ += ((-elem)*revers_matrix[ind][key])/self[i][i]
+                        k = 1 if i==key else 0
+                        revers_matrix[i][key] = k/self[i][i] + summ
 
 
-            return Matrix.get_from_list([[i] for i in new_sol])
+            return Matrix.get_from_list([[i] for i in new_sol]), Matrix.get_from_list(revers_matrix)
         else:
             return False
         
 # =================================Обратная========================================
-    def revers_matrix(self):
-        '''
-        Обратная Матрица (просто применить к экземпляру)
-        (Возвращает)
-        '''
-        a = [[0 for j in range(len(self[0]))] for i in range(len(self))]
-        b = Matrix.get_from_list(self).det()
-        for i in range(len(self)):
-            for j in range(len(self[0])):
-                a[i][j] = ((-1)**(i+j))*(Matrix.get_from_list(Matrix().get_minor(self, i, j))).det()
-        a = Matrix.get_from_list(a).transpose()
-        return a/b
+    # def revers_matrix(self):
+    #     '''
+    #     Обратная Матрица (просто применить к экземпляру)
+    #     (Возвращает)
+    #     '''
+    #     a = [[0 for j in range(len(self[0]))] for i in range(len(self))]
+    #     b = Matrix.get_from_list(self).det()
+    #     for i in range(len(self)):
+    #         for j in range(len(self[0])):
+    #             a[i][j] = ((-1)**(i+j))*(Matrix.get_from_list(Matrix().get_minor(self, i, j))).det()
+    #     a = Matrix.get_from_list(a).transpose()
+    #     return a/b
 # =================================================================================
 
 
