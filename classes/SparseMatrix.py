@@ -1,4 +1,4 @@
-from classes import Matrix
+from .Matrix import Matrix
 
 
 class SparseMatrix(Matrix):
