@@ -360,7 +360,7 @@ class Matrix:
         else:
             return [i for i in range(count)]
 
-    def jacoby(self, other, c):
+    def method_jacoby(self, other, c):
         '''
         Сам Якоби
         Matrix.jacoby(other, c)
