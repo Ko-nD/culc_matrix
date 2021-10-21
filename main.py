@@ -7,7 +7,15 @@ if __name__ == '__main__':
     a = Matrix.get_from_list([[5,1],[3,4]])
     other = [[5],[6]]
     c = 0.001
-    print(a.method_jacoby(other, c)[1])
+    # print(a.method_jacoby(other, c)[1])
 
-    m = Matrix.get_from_list([[3, 4], [5, 2]])
-    print(get_eigen_values(m))
+    m = Matrix.get_from_list([[1,2] ,[5,7]])
+    m = Matrix.union(m,Matrix.unit(len(m)))
+  
+    print(m)
+    print('========')
+    m.method_Jordano_Gauss()
+    print('========')
+    print(m)
+    
+

@@ -361,7 +361,7 @@ class Matrix:
         if len(set(a)) == count:
             return a
         else:
-            return [i for i in range(count)]
+            return False
 
     def method_jacoby(self, other, c):
         '''
@@ -421,8 +421,31 @@ class Matrix:
     #     return a/b
 # =================================================================================
 
+# =========================Объединение алгоритмов==================================
+
+    def unification(self, other, c):
+        
+        if self.det() != 0:
+            jacoby = self.method_jacoby(other,c)
+            if not(jacoby):
+                print('Матрица расходиться')
+            else:
+                print(jacoby)
 
 
+
+
+
+
+
+        else:
+            print('Скорее всего матрица вырожденная')
+            return False
+
+
+
+
+# ================================================================================= 
 
     @staticmethod
     def do_equation(equation: str):
