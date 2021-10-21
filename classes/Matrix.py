@@ -424,28 +424,26 @@ class Matrix:
 # =========================Объединение алгоритмов==================================
 
     def unification(self, other, c):
-        
         if self.det() != 0:
             jacoby = self.method_jacoby(other,c)
             if not(jacoby):
-                print('Метод ')
+                print('Метод Якоби не работает')
                 print('Далее считаем по Гаусу')
-
                 main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(len(self)))
-                print(main_lst)
                 main_lst.method_Jordano_Gauss()
-                
-                
-
+                answ =[[main_lst[i][len(self)]] for i in range(len(self))]
+                print('Ответ \n{}'.format(answ))
+                revers = []
+                for i in range(len(main_lst)):
+                    revers.append(main_lst[i][len(self)+1:])
+                print('Число обусловленности {}'.format(Matrix.get_from_list(revers).norm_by_col()*self.norm_by_col()))
+                return answ
             else:
                 answ, revers = jacoby
                 print('Ответ: \n{}'.format(answ))
                 # Считаем число обусловленности для Якоби
                 print('Обусловленность:{}'.format(revers.norm_by_col()*self.norm_by_col()))
                 return answ
-
-
-
         else:
             print('Скорее всего матрица вырожденная')
             return False
