@@ -428,13 +428,21 @@ class Matrix:
         if self.det() != 0:
             jacoby = self.method_jacoby(other,c)
             if not(jacoby):
-                print('Матрица расходиться')
+                print('Метод ')
+                print('Далее считаем по Гаусу')
+
+                main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(len(self)))
+                print(main_lst)
+                main_lst.method_Jordano_Gauss()
+                
+                
+
             else:
-                print(jacoby)
-
-
-
-
+                answ, revers = jacoby
+                print('Ответ: \n{}'.format(answ))
+                # Считаем число обусловленности для Якоби
+                print('Обусловленность:{}'.format(revers.norm_by_col()*self.norm_by_col()))
+                return answ
 
 
 

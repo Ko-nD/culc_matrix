@@ -9,13 +9,14 @@ if __name__ == '__main__':
     c = 0.001
     # print(a.method_jacoby(other, c)[1])
 
-    m = Matrix.get_from_list([[1,2] ,[5,7]])
-    m = Matrix.union(m,Matrix.unit(len(m)))
+    m = Matrix.get_from_list([[1,0] ,[2,1]])
+    # m = Matrix.union(m,Matrix.unit(len(m)))
   
-    print(m)
-    print('========')
-    m.method_Jordano_Gauss()
-    print('========')
-    print(m)
+    # print(m)
+    # print('========')
+    # m.method_Jordano_Gauss()
+    # print('========')
+    print(m.unification([[1],[2]], 0.01))
+    # print(Matrix.union(m, Matrix.get_from_list([[1],[2]]), Matrix.unit(len(m))))
     
 
