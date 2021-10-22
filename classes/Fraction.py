@@ -21,7 +21,7 @@ class Fraction(metaclass=SingletonValue):
         self.numerator, self.denominator = Fraction.reduce(numerator, denominator)
 
     @staticmethod
-    def to_fraction(x):
+    def new_instance(x):
         if type(x) == Fraction:
             return x
         if type(x) == int:
@@ -36,7 +36,7 @@ class Fraction(metaclass=SingletonValue):
         return self.numerator / self.denominator
 
     def __add__(self, other):
-        another = Fraction.to_fraction(other)
+        another = Fraction.new_instance(other)
         return Fraction(
             self.numerator * another.denominator + another.numerator * self.denominator,
             self.denominator * another.denominator
@@ -46,7 +46,7 @@ class Fraction(metaclass=SingletonValue):
         return self + other
 
     def __mul__(self, other):
-        another = Fraction.to_fraction(other)
+        another = Fraction.new_instance(other)
         return Fraction(self.numerator * another.numerator, self.denominator * another.denominator)
 
     def __rmul__(self, other):
@@ -56,7 +56,7 @@ class Fraction(metaclass=SingletonValue):
         return Fraction(-self.numerator, self.denominator)
 
     def __truediv__(self, other):
-        another = Fraction.to_fraction(other)
+        another = Fraction.new_instance(other)
         return Fraction(self.numerator * another.denominator, self.denominator * another.numerator)
 
     def __rtruediv__(self, other):

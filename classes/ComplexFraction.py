@@ -11,22 +11,22 @@ class ComplexFraction(metaclass=SingletonValue):
         self.img = img
 
     @staticmethod
-    def to_complex_fraction(x):
+    def new_instance(x):
         if type(x) == ComplexFraction:
             return x
         if type(x) == Fraction:
-            return ComplexFraction(x, Fraction.to_fraction(0))
+            return ComplexFraction(x, Fraction.new_instance(0))
         if type(x) == int or type(x) == float:
-            return ComplexFraction(Fraction.to_fraction(x), Fraction.to_fraction(0))
+            return ComplexFraction(Fraction.new_instance(x), Fraction.new_instance(0))
         if type(x) == complex:
-            return ComplexFraction(Fraction.to_fraction(x.real), Fraction.to_fraction(x.imag))
+            return ComplexFraction(Fraction.new_instance(x.real), Fraction.new_instance(x.imag))
         raise NotImplementedError(f'Type {type(x)} is not supported')
 
     def compute(self):
         return complex(self.real.compute(), self.img.compute())
 
     def __add__(self, other):
-        another = ComplexFraction.to_complex_fraction(other)
+        another = ComplexFraction.new_instance(other)
         return ComplexFraction(self.real+another.real, self.img+another.img)
 
     def __radd__(self, other):
@@ -36,7 +36,7 @@ class ComplexFraction(metaclass=SingletonValue):
         return ComplexFraction(-self.real, -self.img)
 
     def __mul__(self, other):
-        another = ComplexFraction.to_complex_fraction(other)
+        another = ComplexFraction.new_instance(other)
         return ComplexFraction(
             self.real * another.real - self.img * another.img,
             self.real * another.img + another.real * self.img

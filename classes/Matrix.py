@@ -1,6 +1,9 @@
+from classes import Fraction, ComplexFraction
+
+
 class Matrix:
-    def __init__(self, m=1, n=1): 
-        __slots__ = 'matrix'
+    def __init__(self, m=1, n=1):
+        __slots__ = 'self'
         assert n > 0, 'Неверные данные'
         assert m > 0, 'Неверные данные'
         assert isinstance(n, int), 'Неверные данные'
@@ -39,8 +42,8 @@ class Matrix:
         return True
 
     @staticmethod
-    def get_minor(matrix, i, j):
-        return [row[:j] + row[j+1:] for row in (matrix[:i] + matrix[i + 1:])]
+    def get_minor(self, i, j):
+        return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
     def transpose(self):
         matrix_T = [[0 for j in range(len(self))] for i in range(len(self[0]))]
@@ -161,7 +164,7 @@ class Matrix:
         :param j: индекс элемента строки с которого начинается(включительно) вычитание
         """
         for j in range(j, self.shape()[1]):
-            self[i1][j] -= k * self[i2][j] 
+            self[i1][j] -= k * self[i2][j]
 
     def get_index_max_elem_in_col(self, j=0, start=0, end=0):
         """
@@ -172,7 +175,7 @@ class Matrix:
         m, n = self.shape()
         assert 0 <= j <= n and 0 <= start <= end < m, 'Столбца с таким индеком не существует или указаны неверные границы'
         max_elem = 0
-        for i in range(start, end+1):
+        for i in range(start, end + 1):
             elem = abs(self[i][j])
             if elem > max_elem:
                 max_elem = elem
@@ -188,16 +191,16 @@ class Matrix:
         for i in range(m):
             # i совпадает с нужным j, так как идём поп диагонали
             if swap_rows:
-                self.swap_rows(i, self.get_index_max_elem_in_col(j=i, start=i, end=m-1))
+                self.swap_rows(i, self.get_index_max_elem_in_col(j=i, start=i, end=m - 1))
             self.divide_row_by_number(i, self[i][i], j=i)
             # зануляем значения столбца под единицей
-            for i2 in range(i, m-1):
-                self.combine_rows(i2+1, i, self[i2+1][i], j=i)
+            for i2 in range(i, m - 1):
+                self.combine_rows(i2 + 1, i, self[i2 + 1][i], j=i)
 
     def lower_triangular(self, swap_rows=False):
         """ приведение матрицы к верхней треугольной """
         m, n = self.shape()
-        for i in range(m-1, 0, -1):
+        for i in range(m - 1, 0, -1):
             # i совпадает с нужным j, так как идём по диагонали
             if swap_rows:
                 self.swap_rows(i, self.get_index_max_elem_in_col(j=i, start=0, end=i))
@@ -212,15 +215,15 @@ class Matrix:
         m, n = self.shape()
         X_arr = [0] * m
         for i in range(m - 1, -1, -1):
-            X_arr[i] = self[i][m] - sum(x * a for x, a in zip(X_arr[i+1:m+1], self[i][i+1:m+1]))
+            X_arr[i] = self[i][m] - sum(x * a for x, a in zip(X_arr[i + 1:m + 1], self[i][i + 1:m + 1]))
         return X_arr
-    
+
     def method_Gauss(self):
         """ решение СЛАУ методом Гаусса"""
         # пока нет проверок, т.к. не понятно как объединять матрицы будем
-        self.upper_triangular(swap_rows=True) # приводим матрицу к верх.треугольной
-        answer = self.reverse_course() # делаем обратный ход и получаем ответы
-        print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
+        self.upper_triangular(swap_rows=True)  # приводим матрицу к верх.треугольной
+        answer = self.reverse_course()  # делаем обратный ход и получаем ответы
+        print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
         return answer
 
     def method_Jordano_Gauss(self):
@@ -229,7 +232,7 @@ class Matrix:
         self.lower_triangular()
         m = self.shape()[0]
         answer = [self[i][m] for i in range(m)]
-        print(*(f"x{i+1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
+        print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
         return answer
 
     def norm_by_row(self):
@@ -240,7 +243,7 @@ class Matrix:
         m, n = self.shape()
         max_norm = 0
         for i in range(m):
-            row_sum = 0 
+            row_sum = 0
             for j in range(n):
                 row_sum += abs(self[i][j])
             if row_sum > max_norm:
@@ -255,7 +258,7 @@ class Matrix:
         m, n = self.shape()
         max_norm = 0
         for j in range(n):
-            col_sum = 0 
+            col_sum = 0
             for i in range(m):
                 col_sum += abs(self[i][j])
             if col_sum > max_norm:
@@ -272,7 +275,7 @@ class Matrix:
         for i in range(m):
             for j in range(n):
                 norm += self[i][j] ** 2
-        return norm ** (1/2) 
+        return norm ** (1 / 2)
 
     def __str__(self):
         string = ''
@@ -311,7 +314,7 @@ class Matrix:
         """ Создание единичной матрицы размером n на n """
         assert isinstance(n, int), 'Размерность задана не целочисленно'
         return Matrix.get_from_list([[1 if i == j else 0 for i in range(n)] for j in range(n)])
-    
+
     @staticmethod
     def union(*args):
         """
@@ -326,18 +329,20 @@ class Matrix:
             new_m = matrix.shape()[0]
             if step == 0:
                 old_m = new_m
-                continue 
+                continue
             assert new_m == old_m, 'Размерность матриц по строкам не совпадает'
-        return Matrix.get_from_list([[elem for row in [matrix[i] for matrix in args] for elem in row] for i in range(old_m)])
+        return Matrix.get_from_list(
+            [[elem for row in [matrix[i] for matrix in args] for elem in row] for i in range(old_m)])
 
-    #TODO: думаю делать рекурсией надо
-    def separation(matrix, *args):
+    # TODO: думаю делать рекурсией надо
+    def separation(self, *args):
         """Разделение произвольного кол-ва Матриц по столбцам"""
-        assert isinstance(matrix, Matrix), 'Передан не экземпляр класса Matrix'
-        if args == None: 
-            return matrix
+        assert isinstance(self, Matrix), 'Передан не экземпляр класса Matrix'
+        if args is None:
+            return self
         pass
-# =====================================Якоби===========================================
+
+    # =====================================Якоби===========================================
     @staticmethod
     def __diag_conv(self):
         '''
@@ -354,7 +359,7 @@ class Matrix:
         for line in self:
             count += 1
             for index, elem in enumerate(line):
-                if 2*abs(elem) > sum(list(map(abs, line))):
+                if 2 * abs(elem) > sum(list(map(abs, line))):
                     a.append(index)
                     break
 
@@ -372,22 +377,23 @@ class Matrix:
         '''
         # Создаем нулевую обратную матрицу
         revers_matrix = [[0 for j in range(self.shape()[0])] for i in range(self.shape()[1])]
-        indexes = Matrix().__diag_conv(self.matrix) # То как надо переставить строки
-        other = [i[0] for i in other] # из списка списков делаем список
-        if indexes: # Если строки можно переставить в диоганально сильную матрицу
-            solves = [1 for i in range(len(indexes))] # Вектор ответов до
-            new_sol = [0 for i in range(len(indexes))] # Вектор ответов после
+        indexes = Matrix().__diag_conv(self.matrix)  # То как надо переставить строки
+        other = [i[0] for i in other]  # из списка списков делаем список
+        if indexes:  # Если строки можно переставить в диоганально сильную матрицу
+            solves = [1 for i in range(len(indexes))]  # Вектор ответов до
+            new_sol = [0 for i in range(len(indexes))]  # Вектор ответов после
             count = 0
-            while (max([abs(solves[i]-new_sol[i]) for i in range(len(indexes))]) > c) or (count < 1000): # Проверка на точность
+            while (max([abs(solves[i] - new_sol[i]) for i in range(len(indexes))]) > c) or (
+                    count < 1000):  # Проверка на точность
                 count += 1
-                solves = new_sol.copy() # Присваиваем старым зн. новые и пересчитываем
+                solves = new_sol.copy()  # Присваиваем старым зн. новые и пересчитываем
                 # Встроенные работает быстрее переприсваивания 
-                for key, val in enumerate(indexes): #  Мы должны из строк выражать разные переменны
+                for key, val in enumerate(indexes):  # Мы должны из строк выражать разные переменны
                     summ = 0
                     for ind, elem in enumerate(self[key]):
                         if ind != val:
-                            summ += ((-elem)*solves[ind])/self[key][val]
-                    new_sol[val] = other[key]/self[key][val] + summ # Решение
+                            summ += ((-elem) * solves[ind]) / self[key][val]
+                    new_sol[val] = other[key] / self[key][val] + summ  # Решение
                     # Подсчет обратной матрицы, тк в ней будет n Слау,
                     # Мы можем итеррироваться по n решениям Предыдущей СЛАУ
                     # Можно я не буду объснять как мы считаем слау по якоби?
@@ -397,16 +403,15 @@ class Matrix:
                         summ = 0
                         for ind, elem in enumerate(self[i]):
                             if ind != i:
-                                summ += ((-elem)*revers_matrix[ind][key])/self[i][i]
-                        k = 1 if i==key else 0
-                        revers_matrix[i][key] = k/self[i][i] + summ
-
+                                summ += ((-elem) * revers_matrix[ind][key]) / self[i][i]
+                        k = 1 if i == key else 0
+                        revers_matrix[i][key] = k / self[i][i] + summ
 
             return Matrix.get_from_list([[i] for i in new_sol]), Matrix.get_from_list(revers_matrix)
         else:
             return False
-        
-# =================================Обратная========================================
+
+    # =================================Обратная========================================
     # def revers_matrix(self):
     #     '''
     #     Обратная Матрица (просто применить к экземпляру)
@@ -419,39 +424,49 @@ class Matrix:
     #             a[i][j] = ((-1)**(i+j))*(Matrix.get_from_list(Matrix().get_minor(self, i, j))).det()
     #     a = Matrix.get_from_list(a).transpose()
     #     return a/b
-# =================================================================================
+    # =================================================================================
 
-# =========================Объединение алгоритмов==================================
+    def convert(self, type_):
+        """
+        Функция, которая конвертирует значения матрицы в переданный тип (int, float, complex, Fraction, ComplexFraction)
+        меняет значения in-place
+        :param type_: тип данных
+        """
+        for i in range(self.m):
+            for j in range(self.n):
+                self[i][j] = type_.new_instance(self[i][j]) \
+                    if type_ is Fraction or type_ is ComplexFraction \
+                    else type_(self[i][j])
+
+    # =========================Объединение алгоритмов==================================
 
     def unification(self, other, c):
         if self.det() != 0:
-            jacoby = self.method_jacoby(other,c)
-            if not(jacoby):
+            jacoby = self.method_jacoby(other, c)
+            if not jacoby:
                 print('Метод Якоби не работает')
                 print('Далее считаем по Гаусу')
                 main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(len(self)))
                 main_lst.method_Jordano_Gauss()
-                answ =[[main_lst[i][len(self)]] for i in range(len(self))]
+                answ = [[main_lst[i][len(self)]] for i in range(len(self))]
                 print('Ответ \n{}'.format(answ))
                 revers = []
                 for i in range(len(main_lst)):
-                    revers.append(main_lst[i][len(self)+1:])
-                print('Число обусловленности {}'.format(Matrix.get_from_list(revers).norm_by_col()*self.norm_by_col()))
+                    revers.append(main_lst[i][len(self) + 1:])
+                print(
+                    'Число обусловленности {}'.format(Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col()))
                 return answ
             else:
                 answ, revers = jacoby
                 print('Ответ: \n{}'.format(answ))
                 # Считаем число обусловленности для Якоби
-                print('Обусловленность:{}'.format(revers.norm_by_col()*self.norm_by_col()))
+                print('Обусловленность:{}'.format(revers.norm_by_col() * self.norm_by_col()))
                 return answ
         else:
             print('Скорее всего матрица вырожденная')
             return False
 
-
-
-
-# ================================================================================= 
+    # =================================================================================
 
     @staticmethod
     def do_equation(equation: str):
@@ -480,14 +495,14 @@ class Matrix:
         return matrix
 
     @staticmethod
-    def read_csv(path='./data/', file_name='matrix.csv', delimiter=' '):
+    def read_csv(path='./data/', file_name='self.csv', delimiter=' '):
         """ Чтение матрицы из цсв """
         return Matrix.get_from_list(
             [[float(token) for token in line.split(delimiter)] for line in open(path + file_name)]
         )
 
     @staticmethod
-    def write_matrix_to_csv(matrix, path='./data/', file_name='result.csv', delimiter=' '):
+    def write_matrix_to_csv(self, path='./data/', file_name='result.csv', delimiter=' '):
         """ Запись матрицы в цсв """
         with open(path + file_name, 'w') as f:
             for row in matrix:
