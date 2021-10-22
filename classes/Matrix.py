@@ -43,7 +43,7 @@ class Matrix:
         return True
 
     @staticmethod
-    def get_minor(self, i, j):
+    def get_minor(matrix, i, j):
         return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
     def transpose(self):
@@ -335,14 +335,6 @@ class Matrix:
         return Matrix.get_from_list(
             [[elem for row in [matrix[i] for matrix in args] for elem in row] for i in range(old_m)])
 
-    # TODO: думаю делать рекурсией надо
-    def separation(self, *args):
-        """Разделение произвольного кол-ва Матриц по столбцам"""
-        assert isinstance(self, Matrix), 'Передан не экземпляр класса Matrix'
-        if args is None:
-            return self
-        pass
-
     # =====================================Якоби===========================================
     @staticmethod
     def __diag_conv(self):
@@ -412,21 +404,6 @@ class Matrix:
         else:
             return False
 
-    # =================================Обратная========================================
-    # def revers_matrix(self):
-    #     '''
-    #     Обратная Матрица (просто применить к экземпляру)
-    #     (Возвращает)
-    #     '''
-    #     a = [[0 for j in range(len(self[0]))] for i in range(len(self))]
-    #     b = Matrix.get_from_list(self).det()
-    #     for i in range(len(self)):
-    #         for j in range(len(self[0])):
-    #             a[i][j] = ((-1)**(i+j))*(Matrix.get_from_list(Matrix().get_minor(self, i, j))).det()
-    #     a = Matrix.get_from_list(a).transpose()
-    #     return a/b
-    # =================================================================================
-
     def convert(self, type_):
         """
         Функция, которая конвертирует значения матрицы в переданный тип (int, float, complex, Fraction, ComplexFraction)
@@ -440,7 +417,6 @@ class Matrix:
                     else type_(self[i][j])
 
     # =========================Объединение алгоритмов==================================
-
     def unification(self, other, c):
         if self.det() != 0:
             jacoby = self.method_jacoby(other, c)
@@ -466,8 +442,6 @@ class Matrix:
         else:
             print('Скорее всего матрица вырожденная')
             return False
-
-    # =================================================================================
 
     @staticmethod
     def do_equation(equation: str):
@@ -503,7 +477,7 @@ class Matrix:
         )
 
     @staticmethod
-    def write_matrix_to_csv(self, path='./data/', file_name='result.csv', delimiter=' '):
+    def write_matrix_to_csv(matrix, path='./data/', file_name='result.csv', delimiter=' '):
         """ Запись матрицы в цсв """
         with open(path + file_name, 'w') as f:
             for row in matrix:
