@@ -1,8 +1,7 @@
-from .meta import SingletonValue
 from .Fraction import Fraction
 
 
-class ComplexFraction(metaclass=SingletonValue):
+class ComplexFraction:
     """
         Класс обертка для дробных расчетов над комплексными числами
     """

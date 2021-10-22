@@ -1,4 +1,5 @@
-from classes import Fraction, ComplexFraction
+from .Fraction import Fraction
+from .ComplexFraction import ComplexFraction
 
 
 class Matrix:
