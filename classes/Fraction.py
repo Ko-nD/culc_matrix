@@ -32,6 +32,9 @@ class Fraction:
     def compute(self):
         return self.numerator / self.denominator
 
+    def __neg__(self):
+        return Fraction(-self.numerator, self.denominator)
+
     def __add__(self, other):
         another = Fraction.new_instance(other)
         return Fraction(
@@ -42,15 +45,19 @@ class Fraction:
     def __radd__(self, other):
         return self + other
 
+    def __sub__(self, other):
+        another = Fraction.new_instance(other)
+        return self + (-another)
+
+    def __rsub__(self, other):
+        return (-self) + other
+
     def __mul__(self, other):
         another = Fraction.new_instance(other)
         return Fraction(self.numerator * another.numerator, self.denominator * another.denominator)
 
     def __rmul__(self, other):
         return self * other
-
-    def __neg__(self):
-        return Fraction(-self.numerator, self.denominator)
 
     def __truediv__(self, other):
         another = Fraction.new_instance(other)
@@ -64,6 +71,33 @@ class Fraction:
 
     def __rpow__(self, other):
         return other ** self.compute()
+
+    def __abs__(self):
+        return Fraction(abs(self.numerator), abs(self.denominator))
+
+    @staticmethod
+    def __compare(fraction1, fraction2, comp=lambda x, y: x > y):
+        return comp(fraction1.numerator * fraction2.denominator, fraction2.numerator * fraction1.denominator)
+
+    def __gt__(self, other):
+        another = Fraction.new_instance(other)
+        return Fraction.__compare(self, another)
+
+    def __lt__(self, other):
+        another = Fraction.new_instance(other)
+        return Fraction.__compare(self, another, lambda x, y: x < y)
+
+    def __ge__(self, other):
+        another = Fraction.new_instance(other)
+        return Fraction.__compare(self, another, lambda x, y: x >= y)
+
+    def __le__(self, other):
+        another = Fraction.new_instance(other)
+        return Fraction.__compare(self, another, lambda x, y: x <= y)
+
+    def __eq__(self, other):
+        another = Fraction.new_instance(other)
+        return Fraction.__compare(self, another, lambda x, y: x == y)
 
     def __str__(self):
         return f'Fraction({self.numerator},{self.denominator})'

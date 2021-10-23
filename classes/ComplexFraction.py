@@ -24,6 +24,9 @@ class ComplexFraction:
     def compute(self):
         return complex(self.real.compute(), self.img.compute())
 
+    def __neg__(self):
+        return ComplexFraction(-self.real, -self.img)
+
     def __add__(self, other):
         another = ComplexFraction.new_instance(other)
         return ComplexFraction(self.real+another.real, self.img+another.img)
@@ -31,8 +34,12 @@ class ComplexFraction:
     def __radd__(self, other):
         return self + other
 
-    def __neg__(self):
-        return ComplexFraction(-self.real, -self.img)
+    def __sub__(self, other):
+        another = Fraction.new_instance(other)
+        return self + (-another)
+
+    def __rsub__(self, other):
+        return (-self) + other
 
     def __mul__(self, other):
         another = ComplexFraction.new_instance(other)
@@ -44,11 +51,38 @@ class ComplexFraction:
     def __rmul__(self, other):
         return self * other
 
+    def __truediv__(self, other):
+        another = ComplexFraction.new_instance(other)
+        den = pow(another.real, 2) + pow(another.img, 2)
+        return ComplexFraction(
+            (self.real * another.real + self.img * another.img) / den,
+            (self.img * another.real - self.real * another.img) / den
+        )
+
+    def __rtruediv__(self, other):
+        another = ComplexFraction.new_instance(other)
+        return another / self
+
     def __pow__(self, power, modulo=None):  # сложная логика, лень писать
         return pow(self.compute(), power, modulo)
 
     def __rpow__(self, other):
         return pow(other, self.compute())
+
+    def __abs__(self):
+        return pow(pow(self.real, 2) + pow(self.img, 2), 0.5)
+
+    def __gt__(self, other):
+        another = ComplexFraction.new_instance(other)
+        return self.real > another.real and self.img > another.img
+
+    def __lt__(self, other):
+        another = ComplexFraction.new_instance(other)
+        return self.real < another.real and self.img < another.img
+
+    def __eq__(self, other):
+        another = ComplexFraction.new_instance(other)
+        return self.real == another.real and self.img == another.img
 
     def __str__(self):
         return f'ComplexFraction({self.real},{self.img})'
