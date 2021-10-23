@@ -14,6 +14,7 @@ class Matrix:
             self.n = n
             self.m = m
             self.matrix = [[0] * n] * m
+            self.is_complex = False
 
     def __getitem__(self, key):
         return self.matrix[key]
@@ -214,14 +215,14 @@ class Matrix:
     def reverse_course(self):
         """ обратный ход (для Гаусса) применяется к верхним треугольным матрицам """
         m, n = self.shape()
-        X_arr = [0] * m
+        x_arr = [0] * m
         for i in range(m - 1, -1, -1):
-            X_arr[i] = self[i][m] - sum(x * a for x, a in zip(X_arr[i + 1:m + 1], self[i][i + 1:m + 1]))
-        return X_arr
+            x_arr[i] = self[i][m] - sum(x * a for x, a in zip(x_arr[i + 1:m + 1], self[i][i + 1:m + 1]))
+        return x_arr
 
-    def method_Gauss(self):
+    def solve_gauss(self):
         """ решение СЛАУ методом Гаусса"""
-        if self.dot() != 0:
+        if self.det() != 0:
             self.upper_triangular(swap_rows=True)  # приводим матрицу к верх.треугольной
             answer = self.reverse_course()  # делаем обратный ход и получаем ответы
             print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
@@ -229,7 +230,7 @@ class Matrix:
         else:
             print('Бесконечное кол-во решений')
 
-    def method_Jordano_Gauss(self):
+    def solve_jordano_gauss(self):
         """ решение СЛАУ методом Жордана-Гаусса"""
         self.upper_triangular(swap_rows=True)
         self.lower_triangular()
@@ -410,44 +411,44 @@ class Matrix:
         меняет значения in-place
         :param type_: тип данных
         """
-        m, n = self.shape()
-        for i in range(m):
-            for j in range(n):
+        n, m = self.shape()
+        for i in range(n):
+            for j in range(m):
                 self[i][j] = type_.new_instance(self[i][j]) \
                     if type_ is Fraction or type_ is ComplexFraction \
                     else type_(self[i][j])
 
     # =========================Объединение алгоритмов==================================
     @staticmethod
-    def solve(self, other, c):
+    def solve(self, other, c, min_det=1e-11):
         """
         Функция решающая СЛАУ
         param:
             self - Матрица коэффициентов (тип Matrix)
             other - вектор свободных членов (тип list)
             c - точность
+            min_det - минимальная величина определителя
         return - список ответов / False если их беск.много
         """
-        min_det = 1e-11 # ниже этого значения - считаем что определитель 0
         if self.det() > min_det:
             jacoby = self.method_jacoby(other, c)
-            if jacoby: 
+            if jacoby:
                 answers, revers = jacoby
-                if revers.norm_by_col() * self.norm_by_col() <= 100: #число обусловленности для Якоби
+                if revers.norm_by_col() * self.norm_by_col() <= 100:  # число обусловленности для Якоби
                     print('Ответ: \n{}'.format(answers))
                     return answers
-            else: 
+            else:
                 print('Метод Якоби не работает\nДалее считаем по Жордано-Гауссу')
                 # Объединяем матрицу коэффов, свободных членов и единичную (для обратной) и кидаем в Ж-Г
                 main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(self.shape()[0]))
-                answers = main_lst.method_Jordano_Gauss() # преобразуем main_list к диагонал
+                answers = main_lst.solve_jordano_gauss()  # преобразуем main_list к диагонал
                 # считываем обратную матрицу
                 revers = [main_lst[i][len(self) + 1:] for i in range(len(main_lst))]
                 # если число обусловленности выше 100 - переходим к дробям
-                if Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col() > 100: 
+                if Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col() > 100:
                     main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(self.shape()[0]))
                     main_lst.convert(type_=Fraction)
-                    answers = main_lst.method_Jordano_Gauss() # преобразуем main_list к диагонал
+                    answers = main_lst.solve_jordano_gauss()  # преобразуем main_list к диагонал
                     revers = [main_lst[i][len(self) + 1:] for i in range(len(main_lst))]
                     if Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col() > 100:
                         print('Матрица слабообусловленная, выданные значения могут быть далеки от действительности')

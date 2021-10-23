@@ -1,3 +1,7 @@
+from .Fraction import Fraction
+from .ComplexFraction import ComplexFraction
+
+
 class Symbol:
     """ Класс для символьных вычислений """
     def __init__(self, val='x'):
@@ -32,5 +36,10 @@ class Symbol:
     def __rmul__(self, other):
         return self * other
 
-    def get_function(self):
-        return eval(f'lambda x: {self.val}')
+    def __abs__(self):
+        val = f'abs({self.val})'
+        return Symbol(val)
+
+    def get_function(self, *args):
+        a = ','.join(args)
+        return eval(f'lambda {a}: {self.val}', {'Fraction': Fraction, 'ComplexFraction': ComplexFraction})

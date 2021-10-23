@@ -7,7 +7,8 @@ from .Symbol import *
 
 def get_eigen_values(matrix: Matrix, step=0.001, eps=0.001, iterations=1000000):
     """
-    Функция для вычисления собственных значений матрицы
+    Функция для вычисления собственных значений матрицы на промежутке (-1000;1000)
+    (только для действительного аргумента)
     :param matrix: матрица, для которой необходимо вычислить собственные значения
     :param step: шаг вычислений
     :param eps: число, значение меньше которого является нулем
@@ -16,7 +17,7 @@ def get_eigen_values(matrix: Matrix, step=0.001, eps=0.001, iterations=1000000):
     """
     lambda_ = Symbol()
     new_matrix = matrix - SparseMatrix.get_diag_matrix(matrix.n, matrix.m, lambda_)
-    func = new_matrix.det().get_function()
+    func = new_matrix.det().get_function('x')
     result = []
     for i in range(iterations):
         if abs(func(i * step)) < eps:
