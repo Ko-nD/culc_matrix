@@ -430,7 +430,7 @@ class Matrix:
             min_det - минимальная величина определителя
         return - список ответов / False если их беск.много
         """
-        if self.det() > min_det:
+        if abs(self.det()) > min_det:
             jacoby = self.method_jacoby(other, c)
             if jacoby:
                 answers, revers = jacoby
