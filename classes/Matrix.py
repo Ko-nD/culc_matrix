@@ -43,7 +43,7 @@ class Matrix:
         return True
 
     @staticmethod
-    def get_minor(self, i, j):
+    def get_minor(matrix, i, j):
         return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
     def transpose(self):
@@ -221,20 +221,20 @@ class Matrix:
 
     def method_Gauss(self):
         """ решение СЛАУ методом Гаусса"""
-        # пока нет проверок, т.к. не понятно как объединять матрицы будем
-        self.upper_triangular(swap_rows=True)  # приводим матрицу к верх.треугольной
-        answer = self.reverse_course()  # делаем обратный ход и получаем ответы
-        print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
-        return answer
+        if self.dot() != 0:
+            self.upper_triangular(swap_rows=True)  # приводим матрицу к верх.треугольной
+            answer = self.reverse_course()  # делаем обратный ход и получаем ответы
+            print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
+            return answer
+        else:
+            print('Бесконечное кол-во решений')
 
     def method_Jordano_Gauss(self):
         """ решение СЛАУ методом Жордана-Гаусса"""
         self.upper_triangular(swap_rows=True)
         self.lower_triangular()
         m = self.shape()[0]
-        answer = [self[i][m] for i in range(m)]
-        print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answer)), sep='\n')
-        return answer
+        return [self[i][m] for i in range(m)]
 
     def norm_by_row(self):
         """
@@ -335,14 +335,6 @@ class Matrix:
         return Matrix.get_from_list(
             [[elem for row in [matrix[i] for matrix in args] for elem in row] for i in range(old_m)])
 
-    # TODO: думаю делать рекурсией надо
-    def separation(self, *args):
-        """Разделение произвольного кол-ва Матриц по столбцам"""
-        assert isinstance(self, Matrix), 'Передан не экземпляр класса Matrix'
-        if args is None:
-            return self
-        pass
-
     # =====================================Якоби===========================================
     @staticmethod
     def __diag_conv(self):
@@ -408,24 +400,9 @@ class Matrix:
                         k = 1 if i == key else 0
                         revers_matrix[i][key] = k / self[i][i] + summ
 
-            return Matrix.get_from_list([[i] for i in new_sol]), Matrix.get_from_list(revers_matrix)
+            return [[i] for i in new_sol], Matrix.get_from_list(revers_matrix)
         else:
             return False
-
-    # =================================Обратная========================================
-    # def revers_matrix(self):
-    #     '''
-    #     Обратная Матрица (просто применить к экземпляру)
-    #     (Возвращает)
-    #     '''
-    #     a = [[0 for j in range(len(self[0]))] for i in range(len(self))]
-    #     b = Matrix.get_from_list(self).det()
-    #     for i in range(len(self)):
-    #         for j in range(len(self[0])):
-    #             a[i][j] = ((-1)**(i+j))*(Matrix.get_from_list(Matrix().get_minor(self, i, j))).det()
-    #     a = Matrix.get_from_list(a).transpose()
-    #     return a/b
-    # =================================================================================
 
     def convert(self, type_):
         """
@@ -433,41 +410,52 @@ class Matrix:
         меняет значения in-place
         :param type_: тип данных
         """
-        for i in range(self.m):
-            for j in range(self.n):
+        m, n = self.shape()
+        for i in range(m):
+            for j in range(n):
                 self[i][j] = type_.new_instance(self[i][j]) \
                     if type_ is Fraction or type_ is ComplexFraction \
                     else type_(self[i][j])
 
     # =========================Объединение алгоритмов==================================
-
-    def unification(self, other, c):
-        if self.det() != 0:
+    @staticmethod
+    def solve(self, other, c):
+        """
+        Функция решающая СЛАУ
+        param:
+            self - Матрица коэффициентов (тип Matrix)
+            other - вектор свободных членов (тип list)
+            c - точность
+        return - список ответов / False если их беск.много
+        """
+        min_det = 1e-11 # ниже этого значения - считаем что определитель 0
+        if self.det() > min_det:
             jacoby = self.method_jacoby(other, c)
-            if not jacoby:
-                print('Метод Якоби не работает')
-                print('Далее считаем по Гаусу')
-                main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(len(self)))
-                main_lst.method_Jordano_Gauss()
-                answ = [[main_lst[i][len(self)]] for i in range(len(self))]
-                print('Ответ \n{}'.format(answ))
-                revers = []
-                for i in range(len(main_lst)):
-                    revers.append(main_lst[i][len(self) + 1:])
-                print(
-                    'Число обусловленности {}'.format(Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col()))
-                return answ
-            else:
-                answ, revers = jacoby
-                print('Ответ: \n{}'.format(answ))
-                # Считаем число обусловленности для Якоби
-                print('Обусловленность:{}'.format(revers.norm_by_col() * self.norm_by_col()))
-                return answ
-        else:
-            print('Скорее всего матрица вырожденная')
-            return False
+            if jacoby: 
+                answers, revers = jacoby
+                if revers.norm_by_col() * self.norm_by_col() <= 100: #число обусловленности для Якоби
+                    print('Ответ: \n{}'.format(answers))
+                    return answers
+            else: 
+                print('Метод Якоби не работает\nДалее считаем по Жордано-Гауссу')
+                # Объединяем матрицу коэффов, свободных членов и единичную (для обратной) и кидаем в Ж-Г
+                main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(self.shape()[0]))
+                answers = main_lst.method_Jordano_Gauss() # преобразуем main_list к диагонал
+                # считываем обратную матрицу
+                revers = [main_lst[i][len(self) + 1:] for i in range(len(main_lst))]
+                # если число обусловленности выше 100 - переходим к дробям
+                if Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col() > 100: 
+                    main_lst = Matrix.union(self, Matrix.get_from_list(other), Matrix.unit(self.shape()[0]))
+                    main_lst.convert(type_=Fraction)
+                    answers = main_lst.method_Jordano_Gauss() # преобразуем main_list к диагонал
+                    revers = [main_lst[i][len(self) + 1:] for i in range(len(main_lst))]
+                    if Matrix.get_from_list(revers).norm_by_col() * self.norm_by_col() > 100:
+                        print('Матрица слабообусловленная, выданные значения могут быть далеки от действительности')
 
-    # =================================================================================
+            print(*(f"x{i + 1} = {elem}" for i, elem in enumerate(answers)), sep='\n')
+            return answers
+        print('скорее всего: бесконечное кол-во решений (матрица вырожденная)')
+        return False
 
     @staticmethod
     def do_equation(equation: str):
@@ -503,7 +491,7 @@ class Matrix:
         )
 
     @staticmethod
-    def write_matrix_to_csv(self, path='./data/', file_name='result.csv', delimiter=' '):
+    def write_matrix_to_csv(matrix, path='./data/', file_name='result.csv', delimiter=' '):
         """ Запись матрицы в цсв """
         with open(path + file_name, 'w') as f:
             for row in matrix:
